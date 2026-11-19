@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEX: Fixes &amp; Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--bg2:#0e1420;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--blue:#4a9eff;--amber:#f0a83a;--red:#e65c5c;--green:#4cc38a}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1100px 600px at 80% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  a{color:var(--cyan)}
+  header{border-bottom:1px solid var(--line);padding:52px 0 36px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,46px);line-height:1.08;margin:18px 0 12px;letter-spacing:-.02em}
+  h1 .accent{background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:17px;color:var(--mut);max-width:680px}
+  .nav{margin-top:18px;font-size:14px}
+  .nav a{text-decoration:none;border:1px solid var(--line2);padding:7px 14px;border-radius:999px;display:inline-block}
+  .lesson{margin-top:22px;border:1px solid var(--line2);border-left:3px solid var(--green);background:rgba(76,195,138,.06);border-radius:12px;padding:16px 18px;max-width:760px;color:var(--mut)}
+  .lesson b{color:var(--green)}
+  main{padding:30px 0 10px}
+  .fix{border-top:1px solid var(--line);padding:30px 0}
+  .fixhead{display:flex;gap:16px;align-items:flex-start}
+  .fnum{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--cyan);border:1px solid var(--cyan-dim);border-radius:8px;padding:6px 9px;flex-shrink:0}
+  .fix h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin:0 0 6px}
+  .sev{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+  .sev.crit{color:var(--red);border:1px solid rgba(230,92,92,.4);background:rgba(230,92,92,.08)}
+  .sev.high{color:var(--amber);border:1px solid rgba(240,168,58,.4);background:rgba(240,168,58,.08)}
+  .row{margin-top:14px}
+  .row .lab{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .row .lab:before{content:"";width:6px;height:6px;border-radius:50%}
+  .row.attack .lab{color:var(--red)} .row.attack .lab:before{background:var(--red)}
+  .row.fixn .lab{color:var(--green)} .row.fixn .lab:before{background:var(--green)}
+  .row p{margin:0;font-size:14.5px;color:var(--mut)}
+  .row.fixn p{color:var(--ink)}
+  .codewrap{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b1119}
+  .codebar{display:flex;justify-content:space-between;align-items:center;background:#0e1623;border-bottom:1px solid var(--line);padding:6px 12px}
+  .lang{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .copy{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);background:none;border:1px solid var(--cyan-dim);border-radius:6px;padding:3px 10px;cursor:pointer}
+  .copy:hover{background:rgba(53,208,192,.1)}
+  pre{margin:0;padding:16px;overflow-x:auto}
+  code{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;color:#cfe3f2;white-space:pre}
+  .prio{border-top:1px solid var(--line);padding:34px 0}
+  .prio h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:26px;margin:0 0 6px}
+  .prio ol{margin:14px 0 0;padding-left:22px;color:var(--mut);font-size:15px}
+  .prio li{margin:7px 0}
+  footer{border-top:1px solid var(--line);padding:30px 0 60px}
+  .disc{font-size:12.5px;color:var(--dim);border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:14px 16px}
+  .disc b{color:var(--mut)}
+  @media(max-width:600px){code{font-size:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <span class="tag"><span class="dot"></span> Defensive Fixes &amp; Code</span>
+    <h1>ARTEX: the fixes,<br><span class="accent">with code</span></h1>
+    <p class="lede">Every attack from the report mapped to a concrete, code-level fix — in Python, Java, TypeScript, nginx, Terraform, KQL and Splunk SPL.</p>
+    <div class="nav"><a href="index.html">&larr; Back to the issues report</a></div>
+    <div class="lesson"><b>One-line lesson:</b> ARTEX used no zero-days. It chained known, preventable weaknesses at machine speed. Every fix below closes one of them. Code is illustrative — adapt to your stack and test in staging.</div>
+  </div>
+</header>
+<main class="wrap">
+<section class="fix" id="fix-1">
+      <div class="fixhead">
+        <span class="fnum">§1</span>
+        <div>
+          <h3>Login attacks — rate limiting, breached passwords, MFA</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Password spraying / credential stuffing — 151,000+ failed logons, peak 2,900/min.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Rate-limit per account + IP + device, screen breached passwords, and require phishing-resistant MFA with step-up on irreversible actions.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>import time, redis
+from fastapi import HTTPException, Request
+
+r = redis.Redis(decode_responses=True)
+
+LIMITS = [  # (window_seconds, max_attempts, key_template)
+    (60,    5,    &quot;rl:ip:{ip}&quot;),       # 5 tries / minute / IP
+    (3600,  20,   &quot;rl:acct:{user}&quot;),   # 20 tries / hour / account
+    (86400, 100,  &quot;rl:device:{dev}&quot;),  # 100 tries / day / device
+]
+
+def check_login_rate_limit(request: Request, username: str):
+    ip = request.client.host
+    device = request.headers.get(&quot;x-device-id&quot;, &quot;unknown&quot;)
+    now = int(time.time())
+    for window, max_attempts, template in LIMITS:
+        key = template.format(ip=ip, user=username.lower(), dev=device)
+        pipe = r.pipeline()
+        pipe.zremrangebyscore(key, 0, now - window)
+        pipe.zcard(key)
+        _, count = pipe.execute()
+        if count &gt;= max_attempts:
+            raise HTTPException(429, &quot;Too many attempts. Try again later.&quot;)
+        r.zadd(key, {f&quot;{now}:{ip}&quot;: now})
+        r.expire(key, window)</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">javascript</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>// Step-up WebAuthn before payments / beneficiary creation / limit changes
+const assertion = await navigator.credentials.get({
+  publicKey: {
+    challenge: Uint8Array.from(atob(serverChallenge), c =&gt; c.charCodeAt(0)),
+    rpId: &quot;bank.example.com&quot;,
+    userVerification: &quot;required&quot;,   // biometrics/PIN, not just presence
+    timeout: 60000,
+  },
+});
+// Server verifies signature + challenge + origin BEFORE the irreversible action.
+// A stolen password alone is never enough.</code></pre></div>
+    </section>
+<section class="fix" id="fix-2">
+      <div class="fixhead">
+        <span class="fnum">§2</span>
+        <div>
+          <h3>SQL injection — parameterised queries, always</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>SQL injection in search parameters was the Korean banks&#x27; entry point.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Never concatenate input into SQL. Use bound parameters, and run the app on a least-privilege DB account.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code># WRONG: cursor.execute(f&quot;SELECT * FROM loans WHERE agent_id = &#x27;{agent_id}&#x27;&quot;)
+cursor.execute(&quot;SELECT * FROM loans WHERE agent_id = %s&quot;, (agent_id,))</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">java</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>PreparedStatement ps = conn.prepareStatement(
+    &quot;SELECT * FROM loans WHERE agent_id = ?&quot;);
+ps.setString(1, agentId);</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">typescript</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>await pool.query(&quot;SELECT * FROM loans WHERE agent_id = $1&quot;, [agentId]);</code></pre></div>
+    </section>
+<section class="fix" id="fix-3">
+      <div class="fixhead">
+        <span class="fnum">§3</span>
+        <div>
+          <h3>SAML / SSO — reject unsigned or badly-signed assertions</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>VAPOR PANDA walked in with an unsigned SAML assertion.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Validate the signature before trusting any assertion; reject on any failure, and guard against replay.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>def handle_saml_response(response_xml):
+    assertion = parse(response_xml)
+    assert assertion.signature is not None, &quot;REJECT: unsigned assertion&quot;
+    assert verify_signature(assertion, idp_cert_fingerprint), &quot;REJECT: bad signature&quot;
+    assert assertion.conditions.not_before &lt;= now() &lt; assertion.conditions.not_on_or_after
+    assert assertion.audience == MY_SP_ENTITY_ID, &quot;REJECT: wrong audience&quot;
+    assert assertion.recipient == MY_ACS_URL, &quot;REJECT: wrong recipient&quot;
+    assert not replay_cache.seen(assertion.id), &quot;REJECT: replay&quot;
+    replay_cache.add(assertion.id)
+    return establish_session(assertion.subject)</code></pre></div>
+    </section>
+<section class="fix" id="fix-4">
+      <div class="fixhead">
+        <span class="fnum">§4</span>
+        <div>
+          <h3>IDOR — check ownership on every object access</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Authorisation bypass on APIs let agents enumerate other users&#x27; records by changing an ID.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Put the authorization check in the handler, on every request. Return 404 so you don&#x27;t confirm the object exists.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>@app.get(&quot;/api/orders/{order_id}&quot;)
+def get_order(order_id: int, user = Depends(current_user)):
+    order = db.get_order(order_id)
+    if order is None or order.customer_id != user.customer_id:
+        raise HTTPException(404)   # 404, not 403 — don&#x27;t confirm it exists
+    return order</code></pre></div>
+    </section>
+<section class="fix" id="fix-5">
+      <div class="fixhead">
+        <span class="fnum">§5</span>
+        <div>
+          <h3>SSRF and XXE — the road to cloud credentials</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>SSRF and XML external entities reach the cloud metadata service and steal instance credentials.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Allow-list outbound hosts and block internal ranges; require IMDSv2; disable DTDs in every XML parser.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>import ipaddress, socket
+from urllib.parse import urlparse
+
+ALLOWED_HOSTS = {&quot;api.partner.example.com&quot;, &quot;images.vendor.example.com&quot;}
+BLOCKED_NETS = [ipaddress.ip_network(n) for n in
+                (&quot;169.254.0.0/16&quot;,&quot;10.0.0.0/8&quot;,&quot;172.16.0.0/12&quot;,&quot;192.168.0.0/16&quot;,&quot;::1/128&quot;)]
+
+def safe_fetch(url: str) -&gt; bytes:
+    host = urlparse(url).hostname
+    if host not in ALLOWED_HOSTS:
+        raise ValueError(&quot;host not allow-listed&quot;)
+    for ip in {info[4][0] for info in socket.getaddrinfo(host, 443)}:
+        if any(ipaddress.ip_address(ip) in net for net in BLOCKED_NETS):
+            raise ValueError(&quot;blocked destination&quot;)   # defeats DNS rebinding
+    # ... fetch with redirects disabled or re-validated per hop</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">hcl</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>resource &quot;aws_instance&quot; &quot;app&quot; {
+  metadata_options {
+    http_endpoint               = &quot;enabled&quot;
+    http_tokens                 = &quot;required&quot;   # IMDSv2 only — kills SSRF token theft
+    http_put_response_hop_limit = 1
+  }
+}</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">java</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
+f.setFeature(&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;, true);
+f.setFeature(&quot;http://xml.org/sax/features/external-general-entities&quot;, false);
+f.setFeature(&quot;http://xml.org/sax/features/external-parameter-entities&quot;, false);
+f.setXIncludeAware(false);
+f.setExpandEntityReferences(false);</code></pre></div>
+    </section>
+<section class="fix" id="fix-6">
+      <div class="fixhead">
+        <span class="fnum">§6</span>
+        <div>
+          <h3>File upload — never let an upload become code</h3>
+          <span class="sev high">High</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Anonymous file upload dropped a web shell and ran commands on the server.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Validate type and size by content, store with random names outside the web root, and execute nothing in upload paths.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>ALLOWED = {&quot;application/pdf&quot;, &quot;image/jpeg&quot;, &quot;image/png&quot;}
+MAX_BYTES = 10 * 1024 * 1024
+
+def store_upload(file, data: bytes) -&gt; str:
+    if file.content_type not in ALLOWED or len(data) &gt; MAX_BYTES:
+        raise ValueError(&quot;file type or size not allowed&quot;)
+    if not magic_matches(data, file.content_type):   # verify magic bytes
+        raise ValueError(&quot;content does not match declared type&quot;)
+    stored_name = f&quot;{uuid.uuid4().hex}&quot;              # random name, no extension
+    s3.put_object(Bucket=&quot;uploads-quarantine&quot;, Key=stored_name, Body=data)
+    return stored_name
+    # Serve via a download handler (Content-Disposition: attachment) from a
+    # domain that executes nothing. Scan with AV before release.</code></pre></div>
+    </section>
+<section class="fix" id="fix-7">
+      <div class="fixhead">
+        <span class="fnum">§7</span>
+        <div>
+          <h3>Secrets — the 5-minute Key Vault lesson</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>An agent went from a GitHub search to Azure Key Vault exfiltration in 5 minutes.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>No secrets in code/JS/.env/repos — ever. Use short-lived, workload-bound credentials, fetch from a vault at runtime, and scan CI.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+
+client = SecretClient(vault_url=&quot;https://my-vault.vault.azure.net/&quot;,
+                      credential=DefaultAzureCredential())   # managed identity
+db_password = client.get_secret(&quot;prod-db-password&quot;).value</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">yaml</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code># GitHub Actions — block the merge if a secret is detected
+- name: Secret scan
+  uses: gitleaks/gitleaks-action@v2
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}</code></pre></div>
+    </section>
+<section class="fix" id="fix-8">
+      <div class="fixhead">
+        <span class="fnum">§8</span>
+        <div>
+          <h3>Admin / debug surface — remove it or gate it behind SSO</h3>
+          <span class="sev high">High</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Chainstack fell through an internet-exposed test Grafana with default admin credentials.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Keep admin/debug paths on the internal network or behind SSO; change every default credential before first deploy.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">nginx</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>location ~ ^/(admin|debug|actuator|console|grafana) {
+    allow 10.0.0.0/8;          # corporate / VPN range
+    deny  all;
+    # plus SSO auth_request in front — see your IdP module
+}</code></pre></div>
+    </section>
+<section class="fix" id="fix-9">
+      <div class="fixhead">
+        <span class="fnum">§9</span>
+        <div>
+          <h3>Sessions — strong tokens, safe cookies</h3>
+          <span class="sev high">High</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Weak, guessable session tokens let agents ride authenticated sessions.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Strong random tokens, short idle lifetime, host-locked secure cookies, and rotation at every privilege change.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>SessionMiddleware(
+    app,
+    secret_key=load_from_vault(&quot;session-signing-key&quot;),
+    session_cookie=&quot;__Host-session&quot;,   # __Host- prefix: Secure + host-locked
+    max_age=30 * 60,                   # 30-minute idle lifetime for banking
+    same_site=&quot;strict&quot;,
+    https_only=True,
+)
+# Rotate the session ID at login and at every privilege change.
+# Invalidate server-side on logout, password change, and risk events.</code></pre></div>
+    </section>
+<section class="fix" id="fix-10">
+      <div class="fixhead">
+        <span class="fnum">§10</span>
+        <div>
+          <h3>Payment APIs — bind the stages (CERT-In pattern)</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Disbursal APIs were invoked directly, skipping loan creation, KYC, sanction, beneficiary and limit checks.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Enforce the sequence in the API as a state machine, with maker-checker, ceilings and idempotency.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">java</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>public Payout executePayout(String payoutId, User actor) {
+    Payout p = repo.findByIdForUpdate(payoutId);
+
+    require(p.getState() == State.APPROVED,
+            &quot;Must pass creation -&gt; KYC -&gt; sanction -&gt; beneficiary -&gt; approval first&quot;);
+    require(p.getBeneficiary().isPennyDropVerified(), &quot;Beneficiary not verified&quot;);
+    require(!p.getMakerId().equals(actor.getId()),
+            &quot;Maker-checker: approver cannot execute own payout&quot;);
+    require(p.getAmount().compareTo(p.getApprovedAmount()) == 0,
+            &quot;Amount differs from approved record&quot;);
+    require(limitService.withinCeilings(p), &quot;Per-transaction or daily ceiling exceeded&quot;);
+    require(idempotencyStore.claim(p.getIdempotencyKey()), &quot;Duplicate submission&quot;);
+
+    p.setState(State.EXECUTED);
+    return gateway.transfer(p);
+}</code></pre></div>
+    </section>
+<section class="fix" id="fix-11">
+      <div class="fixhead">
+        <span class="fnum">§11</span>
+        <div>
+          <h3>Vendor / OAuth apps — least privilege + watch service principals</h3>
+          <span class="sev crit">Critical</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Storm-0940 authenticated as trusted vendor apps — bypassing user MFA — and one app made itself Global Admin.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Review consents by application ID, grant least privilege, and alert on new app credentials and role grants.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">kusto</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>// Service-principal credential added — persistence from the ConnectWise case
+AuditLogs
+| where OperationName in (&quot;Add service principal credentials&quot;,
+                          &quot;Add app role assignment grant to user&quot;,
+                          &quot;Add member to role&quot;)
+| where InitiatedBy has &quot;servicePrincipal&quot;
+| project TimeGenerated, OperationName, InitiatedBy, TargetResources</code></pre></div>
+    </section>
+<section class="fix" id="fix-12">
+      <div class="fixhead">
+        <span class="fnum">§12</span>
+        <div>
+          <h3>Liveness / KYC — server-side verdict is what held</h3>
+          <span class="sev high">High</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Deepfake attempts were rejected every time because the verdict was computed server-side.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Never trust a client &#x27;passed&#x27; flag; detect injection, verify a movement challenge and depth, and audit recovery-session API keys.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">python</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>def verify_liveness(session) -&gt; bool:
+    frames = session.captured_frames                 # signed by the capture SDK
+    if session.device_attestation != &quot;valid&quot;:        # Play Integrity / App Attest
+        return False
+    if session.virtual_camera_detected or session.hooking_framework_detected:
+        return False                                 # injection-attack signals
+    challenge_ok = check_movement_challenge(frames, session.issued_challenge)
+    depth_ok     = check_depth_consistency(frames)   # not a flat replayed video
+    return challenge_ok and depth_ok                 # verdict computed server-side</code></pre></div>
+    </section>
+<section class="fix" id="fix-13">
+      <div class="fixhead">
+        <span class="fnum">§13</span>
+        <div>
+          <h3>Detection — tune for machine speed, not human speed</h3>
+          <span class="sev high">High</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Intrusions reached privileged access in under 3 hours; daily log review misses that.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Hunt for burst patterns: many accounts from one source in minutes, and probe-then-fuzz sequences.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">splunk</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>index=auth action=failure earliest=-15m
+| stats dc(user) AS distinct_users, count AS failures BY src_ip
+| where distinct_users &gt; 20 AND failures &gt; 200</code></pre></div><div class="codewrap"><div class="codebar"><span class="lang">kusto</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>W3CIISLog
+| where csUserAgent has_any (&quot;artex-enrich&quot;,&quot;artex-pentest&quot;,&quot;artex-audit&quot;,
+                             &quot;artex-verify&quot;,&quot;ARTEX-worker&quot;,&quot;norma/0.4&quot;)
+| summarize count() by csUserAgent, cIP, bin(TimeGenerated, 5m)</code></pre></div>
+    </section>
+<section class="fix" id="fix-14">
+      <div class="fixhead">
+        <span class="fnum">§14</span>
+        <div>
+          <h3>Headers and errors — stop leaking the map</h3>
+          <span class="sev high">High</span>
+        </div>
+      </div>
+      <div class="row attack"><div class="lab">Attack</div><p>Verbose errors and missing headers hand an agent free reconnaissance.</p></div>
+      <div class="row fixn"><div class="lab">Fix</div><p>Set strict security headers and return generic errors to unauthenticated users; log stack traces server-side only.</p></div>
+      <div class="codewrap"><div class="codebar"><span class="lang">nginx</span><button class="copy" onclick="cp(this)">Copy</button></div><pre><code>add_header Strict-Transport-Security &quot;max-age=31536000; includeSubDomains&quot; always;
+add_header X-Content-Type-Options &quot;nosniff&quot; always;
+add_header Referrer-Policy &quot;no-referrer&quot; always;
+add_header Content-Security-Policy &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; object-src &#x27;none&#x27;; frame-ancestors &#x27;none&#x27;&quot; always;
+server_tokens off;</code></pre></div>
+    </section>
+  <div class="prio">
+    <h2>Fix-first priority order</h2>
+    <ol><li>MFA + rate limiting on every login (incl. peripheral/partner/employee systems).</li><li>Rotate and vault every secret; scan repos, JS bundles and pipelines.</li><li>Inventory the external surface; kill default credentials and exposed admin/debug.</li><li>Parameterised queries + least-privilege DB accounts.</li><li>Payment-API state machine + maker-checker + ceilings.</li><li>Vendor-app consent review + service-principal monitoring.</li><li>IMDSv2, SSRF allow-listing, XXE off.</li><li>Server-side liveness verdict + recovery-session API-key audit.</li><li>Burst-tuned detection + automated containment.</li></ol>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <div class="disc"><b>Defensive use only.</b> Prepared as a companion to the ARTEX report. No testing was performed against any live system; every example is a fix pattern for systems you own or are authorized to protect.</div>
+  </div>
+</footer>
+<script>
+function cp(btn){
+  var code = btn.closest('.codewrap').querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(function(){
+    var t = btn.textContent; btn.textContent = 'Copied'; setTimeout(function(){btn.textContent=t;},1400);
+  }).catch(function(){});
+}
+</script>
+</body>
+</html>
