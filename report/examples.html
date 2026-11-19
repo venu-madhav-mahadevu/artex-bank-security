@@ -189,34 +189,6 @@ document.getElementById('vbClose').onclick=function(){panel.classList.remove('op
 })();
 </script>
 
-<script data-goatcounter="https://YOURCODE.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<div id="vb-views" style="position:fixed;left:16px;bottom:16px;z-index:9997;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6f8299;background:#0e1420;border:1px solid #223044;border-radius:999px;padding:6px 12px;display:none">Views: …</div>
-<script>
-(function(){
-  var CODE="YOURCODE";
-  if(CODE==="YOURCODE") return;              // analytics inactive until you set your code
-  var start=Date.now(), sent=false;
-  function pingTime(){
-    if(sent) return; sent=true;
-    try{
-      var sec=Math.round((Date.now()-start)/1000);
-      var url="https://"+CODE+".goatcounter.com/count?"+
-        "p="+encodeURIComponent(location.pathname+"#time")+
-        "&t="+encodeURIComponent("time on "+location.pathname+": "+sec+"s")+"&e=true";
-      if(navigator.sendBeacon) navigator.sendBeacon(url); else fetch(url,{mode:"no-cors"});
-    }catch(e){}
-  }
-  addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden") pingTime(); });
-  addEventListener("pagehide", pingTime);
-  var el=document.getElementById("vb-views");
-  try{
-    fetch("https://"+CODE+".goatcounter.com/counter/TOTAL.json")
-      .then(function(r){return r.json();})
-      .then(function(d){ el.textContent="Views: "+(d.count||d.count_unique||0); el.style.display="block"; })
-      .catch(function(){});
-  }catch(e){}
-})();
-</script>
-
+<div style="position:fixed;left:16px;bottom:16px;z-index:9997"><img src="https://visitor-badge.laobi.icu/badge?page_id=venu-madhav-mahadevu.artex-bank-security&left_text=Site%20visits&left_color=%230e1420&right_color=%2335d0c0" alt="Site visits" style="height:26px;border-radius:7px;opacity:.9"/></div>
 </body>
 </html>
