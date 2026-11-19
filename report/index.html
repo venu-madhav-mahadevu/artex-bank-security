@@ -199,6 +199,53 @@
   </section>
 
   <section>
+    <div class="eyebrow">The eight types</div>
+    <h2>How many types of attack</h2>
+    <p class="sub">ARTEX's methods fall into eight types — six ways in, and two things it does after access.</p>
+    <div class="chainwrap">
+    <svg width="100%" viewBox="0 0 1000 356" role="img" aria-label="Eight types of ARTEX attack">
+      <g font-size="16" font-weight="600">
+        <rect x="20" y="20" width="470" height="64" rx="11" fill="rgba(230,92,92,.10)" stroke="rgba(230,92,92,.38)"/>
+        <text x="44" y="46" fill="#e8eef6">1 · Reconnaissance</text>
+        <text x="44" y="68" fill="#9fb2c8" font-size="13" font-weight="400">enumerate, fuzz, map assets</text>
+
+        <rect x="510" y="20" width="470" height="64" rx="11" fill="rgba(230,92,92,.10)" stroke="rgba(230,92,92,.38)"/>
+        <text x="534" y="46" fill="#e8eef6">5 · Secret harvesting</text>
+        <text x="534" y="68" fill="#9fb2c8" font-size="13" font-weight="400">keys from code, JS bundles, repos</text>
+
+        <rect x="20" y="96" width="470" height="64" rx="11" fill="rgba(230,92,92,.10)" stroke="rgba(230,92,92,.38)"/>
+        <text x="44" y="122" fill="#e8eef6">2 · Credential attacks</text>
+        <text x="44" y="144" fill="#9fb2c8" font-size="13" font-weight="400">spray, stuff, reuse credentials</text>
+
+        <rect x="510" y="96" width="470" height="64" rx="11" fill="rgba(230,92,92,.10)" stroke="rgba(230,92,92,.38)"/>
+        <text x="534" y="122" fill="#e8eef6">6 · Identity / deepfake bypass</text>
+        <text x="534" y="144" fill="#9fb2c8" font-size="13" font-weight="400">spoof liveness checks</text>
+
+        <rect x="20" y="172" width="470" height="64" rx="11" fill="rgba(230,92,92,.10)" stroke="rgba(230,92,92,.38)"/>
+        <text x="44" y="198" fill="#e8eef6">3 · Exploitation &amp; chaining</text>
+        <text x="44" y="220" fill="#9fb2c8" font-size="13" font-weight="400">SQLi, IDOR, SSRF, file-upload RCE</text>
+
+        <rect x="510" y="172" width="470" height="64" rx="11" fill="rgba(240,168,58,.10)" stroke="rgba(240,168,58,.40)"/>
+        <text x="534" y="198" fill="#e8eef6">7 · Data exfiltration</text>
+        <text x="534" y="220" fill="#9fb2c8" font-size="13" font-weight="400">read databases, send PII out</text>
+
+        <rect x="20" y="248" width="470" height="64" rx="11" fill="rgba(230,92,92,.10)" stroke="rgba(230,92,92,.38)"/>
+        <text x="44" y="274" fill="#e8eef6">4 · Supply-chain</text>
+        <text x="44" y="296" fill="#9fb2c8" font-size="13" font-weight="400">abuse trusted vendor apps</text>
+
+        <rect x="510" y="248" width="470" height="64" rx="11" fill="rgba(240,168,58,.10)" stroke="rgba(240,168,58,.40)"/>
+        <text x="534" y="274" fill="#e8eef6">8 · Post-access operations</text>
+        <text x="534" y="296" fill="#9fb2c8" font-size="13" font-weight="400">web shells, persistence, lateral move</text>
+      </g>
+      <rect x="20" y="332" width="15" height="15" rx="4" fill="rgba(230,92,92,.18)" stroke="rgba(230,92,92,.5)"/>
+      <text x="44" y="344" fill="#9fb2c8" font-size="13">Access methods — getting in</text>
+      <rect x="320" y="332" width="15" height="15" rx="4" fill="rgba(240,168,58,.18)" stroke="rgba(240,168,58,.5)"/>
+      <text x="344" y="344" fill="#9fb2c8" font-size="13">Impact methods — after access</text>
+    </svg>
+    </div>
+  </section>
+
+  <section>
     <div class="eyebrow">The issues &amp; the fixes</div>
     <h2>Every weakness, mapped to a defense</h2>
     <p class="sub">Each card: what the weakness is, why it works for an autonomous agent, the code-level fix, and the control that prevents recurrence.</p>
