@@ -13,6 +13,9 @@ Sourced research report (16–17 Nov 2026) covering:
 - Documented incidents, step by step: Storm-0940 → ConnectWise (2,250+ M365 tenants), South Korean banks (KFSI findings), AWS MadPot honeypot campaigns, CERT-In payment-API abuse (CIAD-2026-0046/0058), FBI flash alert FLASH-20261113-001
 - Confirmed vs. assessed vs. alleged kept separate throughout
 
+### 📘 [Detailed Fix Guide — ARTEX-Detailed-Fix-Guide.md](solutions/ARTEX-Detailed-Fix-Guide.md)
+The full, easy-to-understand version. Every attack block explained **in simple words** (with a real-life analogy), what happened, why it worked, vulnerable code, why the fix works, step-by-step fix, **fixed code in all major languages** (Python, Java, TypeScript/Node, C#, Go, PHP, Ruby + configs), and how to test each fix.
+
 ### 🛡️ [Solutions — ARTEX-Solutions-Code-Examples.md](solutions/ARTEX-Solutions-Code-Examples.md) ([PDF](solutions/ARTEX-Solutions-Code-Examples.pdf))
 Defensive companion: every attack mapped to a fix **with code examples** (Python, Java, TypeScript, nginx, Terraform, KQL, Splunk SPL):
 1. Rate limiting + breached-password screening + WebAuthn step-up
