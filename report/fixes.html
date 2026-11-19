@@ -484,6 +484,33 @@ document.getElementById('vbClose').onclick=function(){panel.classList.remove('op
 })();
 </script>
 
-<div style="position:fixed;left:16px;bottom:16px;z-index:9997"><img src="https://visitor-badge.laobi.icu/badge?page_id=venu-madhav-mahadevu.artex-bank-security&left_text=Site%20visits&left_color=%230e1420&right_color=%2335d0c0" alt="Site visits" style="height:26px;border-radius:7px;opacity:.9"/></div>
+<div id="fb-count" style="position:fixed;left:16px;bottom:16px;z-index:9997;display:none;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9fb2c8;background:#0e1420;border:1px solid #223044;border-radius:999px;padding:6px 12px">Site visits: …</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { firebaseConfig } from "./firebase-config.js";
+  let analytics=null;
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE") === -1) {
+    const app = initializeApp(firebaseConfig);
+    try {
+      const { getAnalytics, logEvent } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js");
+      analytics = getAnalytics(app);
+      logEvent(analytics, "page_view", { page_path: location.pathname });
+    } catch (e) {}
+    try {
+      const db = getFirestore(app);
+      const ref = doc(db, "stats", "visits");
+      const n = await runTransaction(db, async (tx) => {
+        const s = await tx.get(ref);
+        const c = (s.exists() ? (s.data().count || 0) : 0) + 1;
+        tx.set(ref, { count: c });
+        return c;
+      });
+      const el = document.getElementById("fb-count");
+      el.textContent = "Site visits: " + n;
+      el.style.display = "block";
+    } catch (e) {}
+  }
+</script>
 </body>
 </html>
