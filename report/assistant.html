@@ -111,6 +111,7 @@ function add(who,htmlText,src){
 }
 function ask(query){
   if(!query.trim())return;
+  try{window.vbLogAsk&&window.vbLogAsk(query);}catch(_){}
   add('me',query.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])));
   const e=answer(query);
   if(e) add('bot',e.a,e.s);
@@ -127,11 +128,13 @@ add('bot',"Hi, I'm <b>Venu Assistant</b>. Ask me anything about ARTEX — what i
 <div id="fb-count" style="position:fixed;left:16px;bottom:16px;z-index:9997;display:none;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9fb2c8;background:#0e1420;border:1px solid #223044;border-radius:999px;padding:6px 12px">Site visits: …</div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, runTransaction, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { firebaseConfig } from "./firebase-config.js";
   let analytics=null;
   if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE") === -1) {
     const app = initializeApp(firebaseConfig);
+    const fdb = getFirestore(app);
+    window.vbLogAsk = function(q){ try{ addDoc(collection(fdb,"asks"),{ q:String(q).slice(0,500), page:location.pathname, ts:serverTimestamp() }); }catch(e){} };
     try {
       const { getAnalytics, logEvent } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js");
       analytics = getAnalytics(app);
