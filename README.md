@@ -36,3 +36,13 @@ FBI FLASH-20261113-001 · Microsoft Security (Storm-0940) · AWS Security Blog (
 
 ## Disclaimer
 Defensive security research compiled from public sources for education and defence. Confidence labels in the report (Confirmed / Assessed / Alleged) reflect the underlying sources. No testing was performed against any live system.
+
+## One command to check a project (local, nothing uploaded)
+
+Clone this repo, then run everything at once against your own project:
+
+    bash run-all-checks.sh /path/to/your/project
+
+It runs the pattern scan (`check-code.sh`) plus gitleaks, semgrep and dependency
+audits when installed, and prints what to test by hand. All local — your code is
+never uploaded. See `secure-starter/` for the safe baseline to build toward.
