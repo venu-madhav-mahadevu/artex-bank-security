@@ -65,6 +65,7 @@
       <div class="stat"><div class="n" id="s-asks">—</div><div class="l">Questions asked</div></div>
       <div class="stat"><div class="n" id="s-countries">—</div><div class="l">Time zones seen</div></div>
     </div>
+    <div class="muted" id="fb-sum" style="margin:2px 0 16px"></div>
 
     <div class="grid2">
       <div class="card"><h2 style="margin-top:0">By device</h2><div id="b-device"></div></div>
@@ -141,6 +142,12 @@
       tr.innerHTML = `<td>${esc(fmt(a.ts))}</td><td>${esc(a.q)}</td><td>${esc(a.page)}</td>`;
       at.appendChild(tr);
     });
+    // feedback
+    try {
+      const fSnap = await getDocs(query(collection(db,"feedback"), orderBy("ts","desc"), limit(500)));
+      let help=0, tot=0; fSnap.forEach(d => { tot++; if(d.data().helpful) help++; });
+      $("fb-sum").textContent = tot ? ("Feedback: " + help + " of " + tot + " rated it helpful (" + Math.round(help/tot*100) + "%)") : "Feedback: none yet.";
+    } catch(e){ $("fb-sum").textContent = ""; }
   }
 
   onAuthStateChanged(auth, async (user) => {

@@ -114,7 +114,7 @@ function ask(query){
   try{window.vbLogAsk&&window.vbLogAsk(query);}catch(_){}
   add('me',query.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])));
   const e=(window.VenuAssistant&&window.VenuAssistant.answer(query))||answer(query);
-  if(e){ add('bot',e.a,e.s); addRelatedPage(e.related); }
+  if(e){ add('bot',e.a,e.s); addRelatedPage(e.related); addFbPage(query); }
   else add('bot',"I don't have that in my knowledge base yet. Try asking about <b>ARTEX</b>, how it works, a specific attack (SQL injection, SSRF, credential spraying, payment-API abuse…), or how to fix one.");
   input.value='';
 }
@@ -135,6 +135,7 @@ add('bot',"Hi, I'm <b>Venu Assistant</b>. Ask me anything about ARTEX — what i
     const app = initializeApp(firebaseConfig);
     const fdb = getFirestore(app);
     window.vbLogAsk = function(q){ try{ addDoc(collection(fdb,"asks"),{ q:String(q).slice(0,500), page:location.pathname, ts:serverTimestamp() }); }catch(e){} };
+    window.vbLogFeedback = function(h,q){ try{ addDoc(collection(fdb,"feedback"),{ helpful:!!h, q:String(q||"").slice(0,500), page:location.pathname, ts:serverTimestamp() }); }catch(e){} };
     function vbDevice(){var ua=navigator.userAgent,o='Other',b='Other';if(/Windows/.test(ua))o='Windows';else if(/Mac OS X|Macintosh/.test(ua))o='macOS';else if(/Android/.test(ua))o='Android';else if(/iPhone|iPad|iPod/.test(ua))o='iOS';else if(/Linux/.test(ua))o='Linux';if(/Edg\//.test(ua))b='Edge';else if(/OPR\/|Opera/.test(ua))b='Opera';else if(/Chrome\//.test(ua))b='Chrome';else if(/Firefox\//.test(ua))b='Firefox';else if(/Safari\//.test(ua))b='Safari';var dv=/Mobi|Android|iPhone|iPod/.test(ua)?'Mobile':(/iPad|Tablet/.test(ua)?'Tablet':'Desktop');return{os:o,browser:b,device:dv,screen:screen.width+'x'+screen.height,lang:navigator.language||'',tz:(Intl.DateTimeFormat().resolvedOptions().timeZone)||'',ref:document.referrer||'direct'};}
     try{ addDoc(collection(fdb,"visits"), Object.assign({page:location.pathname, ts:serverTimestamp()}, vbDevice())); }catch(e){}
     try {
