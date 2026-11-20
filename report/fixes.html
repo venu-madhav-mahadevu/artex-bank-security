@@ -474,7 +474,8 @@ function ans(q){var qs=norm(q);if(!qs.length)return null;var best=null,bs=0;for(
 var log=document.getElementById('vbLog'),q=document.getElementById('vbQ'),panel=document.getElementById('vbPanel');
 function esc(s){return s.replace(/[<>&]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;'}[c];});}
 function add(who,h,src){var d=document.createElement('div');d.className='vb-msg '+(who==='me'?'vb-me':'vb-bot');d.innerHTML=h;if(src){var s=document.createElement('div');s.className='vb-src';s.textContent='Source: '+src;d.appendChild(s);}log.appendChild(d);log.scrollTop=log.scrollHeight;}
-function ask(text){if(!text.trim())return;try{window.vbLogAsk&&window.vbLogAsk(text);}catch(_){}add('me',esc(text));var e=ans(text);if(e)add('bot',e.a,e.s);else add('bot',"I don't have that yet. Ask about <b>ARTEX</b>, how it works, an attack (SQL injection, SSRF, credential spraying…), or a fix.");q.value='';}
+function addRel(list){if(!list||!list.length)return;var d=document.createElement('div');d.className='vb-msg vb-bot';var t=document.createElement('div');t.style.cssText='font-size:11px;color:#6f8299;margin-bottom:6px';t.textContent='Related';d.appendChild(t);list.forEach(function(x){var c=document.createElement('span');c.className='vb-chip';c.style.margin='3px 4px 0 0';c.textContent=x;c.onclick=function(){ask(x);};d.appendChild(c);});log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function ask(text){if(!text.trim())return;try{window.vbLogAsk&&window.vbLogAsk(text);}catch(_){}add('me',esc(text));var e=(window.VenuAssistant&&window.VenuAssistant.answer(text))||ans(text);if(e){add('bot',e.a,e.s);addRel(e.related);}else add('bot',"I don't have that yet. Ask about <b>ARTEX</b>, how it works, an attack (SQL injection, SSRF, credential spraying…), or a fix.");q.value='';}
 document.getElementById('vbSend').onclick=function(){ask(q.value);};
 q.addEventListener('keydown',function(e){if(e.key==='Enter')ask(q.value);});
 var started=false;
@@ -494,6 +495,8 @@ document.getElementById('vbClose').onclick=function(){panel.classList.remove('op
     const app = initializeApp(firebaseConfig);
     const fdb = getFirestore(app);
     window.vbLogAsk = function(q){ try{ addDoc(collection(fdb,"asks"),{ q:String(q).slice(0,500), page:location.pathname, ts:serverTimestamp() }); }catch(e){} };
+    function vbDevice(){var ua=navigator.userAgent,o='Other',b='Other';if(/Windows/.test(ua))o='Windows';else if(/Mac OS X|Macintosh/.test(ua))o='macOS';else if(/Android/.test(ua))o='Android';else if(/iPhone|iPad|iPod/.test(ua))o='iOS';else if(/Linux/.test(ua))o='Linux';if(/Edg\//.test(ua))b='Edge';else if(/OPR\/|Opera/.test(ua))b='Opera';else if(/Chrome\//.test(ua))b='Chrome';else if(/Firefox\//.test(ua))b='Firefox';else if(/Safari\//.test(ua))b='Safari';var dv=/Mobi|Android|iPhone|iPod/.test(ua)?'Mobile':(/iPad|Tablet/.test(ua)?'Tablet':'Desktop');return{os:o,browser:b,device:dv,screen:screen.width+'x'+screen.height,lang:navigator.language||'',tz:(Intl.DateTimeFormat().resolvedOptions().timeZone)||'',ref:document.referrer||'direct'};}
+    try{ addDoc(collection(fdb,"visits"), Object.assign({page:location.pathname, ts:serverTimestamp()}, vbDevice())); }catch(e){}
     try {
       const { getAnalytics, logEvent } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js");
       analytics = getAnalytics(app);
@@ -514,5 +517,6 @@ document.getElementById('vbClose').onclick=function(){panel.classList.remove('op
     } catch (e) {}
   }
 </script>
+<script src="assistant-engine.js"></script>
 </body>
 </html>
