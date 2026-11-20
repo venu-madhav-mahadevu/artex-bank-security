@@ -103,6 +103,12 @@
   .detect li{break-inside:avoid;margin:0 0 11px;padding-left:22px;position:relative;font-size:14px;color:var(--mut)}
   .detect li:before{content:"▸";position:absolute;left:0;color:var(--cyan)}
 
+    .glossary-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .gchip{font-size:13px;color:var(--cyan);background:rgba(53,208,192,.07);border:1px solid var(--cyan-dim);border-radius:999px;padding:7px 13px;cursor:pointer}
+  .gchip:hover,.gchip.active{background:rgba(53,208,192,.16)}
+  .gdef{margin-top:16px;min-height:66px;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0;padding:16px 18px}
+  .gdef .gt{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--ink)}
+  .gdef .gd{font-size:14px;color:var(--mut);margin-top:4px}
   footer{border-top:1px solid var(--line);padding:34px 0 60px;margin-top:20px}
   .src{font-size:12.5px;color:var(--dim);line-height:1.8}
   .disc{margin-top:16px;font-size:12.5px;color:var(--dim);border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:14px 16px}
@@ -386,6 +392,50 @@
   </section>
 
   <section>
+    <div class="eyebrow">Prioritise visually</div>
+    <h2>Fix-first risk matrix</h2>
+    <p class="sub">Every issue is high-impact — so sort by effort. The quick wins on the left are where to start today; the bigger projects on the right need planning but still matter.</p>
+    <div class="chainwrap">
+    <svg width="100%" viewBox="0 0 760 500" role="img" aria-label="Impact versus effort matrix of the twelve issues">
+      <rect x="80" y="50" width="320" height="380" fill="rgba(76,195,138,.05)"/>
+      <line x1="80" y1="430" x2="720" y2="430" stroke="#2d4056" stroke-width="1"/>
+      <line x1="80" y1="50" x2="80" y2="430" stroke="#2d4056" stroke-width="1"/>
+      <line x1="400" y1="50" x2="400" y2="430" stroke="#223044" stroke-width="1" stroke-dasharray="4 5"/>
+      <text x="90" y="68" fill="#4cc38a" font-size="12" font-family="Inter,sans-serif">◀ Quick wins — do first</text>
+      <text x="710" y="68" text-anchor="end" fill="#9fb2c8" font-size="12" font-family="Inter,sans-serif">Bigger projects — plan now ▶</text>
+      <text x="400" y="458" text-anchor="middle" fill="#6f8299" font-size="12" font-family="Inter,sans-serif">Effort to fix  →</text>
+      <text x="28" y="240" text-anchor="middle" fill="#6f8299" font-size="12" font-family="Inter,sans-serif" transform="rotate(-90 28 240)">Impact  →</text>
+      <circle cx="208" cy="88" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="208" y="88" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">1</text>
+      <circle cx="272" cy="88" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="272" y="88" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">2</text>
+      <circle cx="413" cy="96" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="413" y="96" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">3</text>
+      <circle cx="400" cy="111" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="400" y="111" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">4</text>
+      <circle cx="477" cy="92" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="477" y="92" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">5</text>
+      <circle cx="310" cy="164" r="15" fill="rgba(240,168,58,.20)" stroke="#f0a83a" stroke-width="1.5"/><text x="310" y="164" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">6</text>
+      <circle cx="195" cy="73" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="195" y="73" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">7</text>
+      <circle cx="246" cy="149" r="15" fill="rgba(240,168,58,.20)" stroke="#f0a83a" stroke-width="1.5"/><text x="246" y="149" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">8</text>
+      <circle cx="605" cy="77" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="605" y="77" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">9</text>
+      <circle cx="502" cy="92" r="15" fill="rgba(230,92,92,.20)" stroke="#e65c5c" stroke-width="1.5"/><text x="502" y="92" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">10</text>
+      <circle cx="579" cy="183" r="15" fill="rgba(240,168,58,.20)" stroke="#f0a83a" stroke-width="1.5"/><text x="579" y="183" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">11</text>
+      <circle cx="624" cy="153" r="15" fill="rgba(240,168,58,.20)" stroke="#f0a83a" stroke-width="1.5"/><text x="624" y="153" text-anchor="middle" dominant-baseline="central" fill="#e8eef6" font-size="13" font-weight="600" font-family="Inter,sans-serif">12</text>
+    </svg>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px 20px;margin-top:14px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">1</span>No rate limit · no MFA</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">2</span>SQL injection</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">3</span>Authentication bypass</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">4</span>IDOR</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">5</span>SSRF & XXE</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#f0a83a22;border:1px solid #f0a83a;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">6</span>File upload → shell</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">7</span>Secrets in code</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#f0a83a22;border:1px solid #f0a83a;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">8</span>Admin/debug & sessions</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">9</span>Payment-API abuse</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#e65c5c22;border:1px solid #e65c5c;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">10</span>Vendor OAuth apps</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#f0a83a22;border:1px solid #f0a83a;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">11</span>Deepfake liveness</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)"><span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#f0a83a22;border:1px solid #f0a83a;color:#e8eef6;font-size:11px;align-items:center;justify-content:center;flex-shrink:0">12</span>Machine-speed detection</div>
+    </div>
+    </div>
+  </section>
+
+  <section>
     <div class="eyebrow">Where to start</div>
     <h2>Fix-first priority order</h2>
     <p class="sub">Not everything at once. This sequence closes the paths ARTEX used most, fastest.</p>
@@ -414,6 +464,29 @@
         <li>Small "test" transactions ahead of a larger disbursal</li>
       </ul>
     </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Plain-language reference</div>
+    <h2>Glossary — tap any term</h2>
+    <p class="sub">Every acronym on this page, defined in one line. Tap a term to see what it means.</p>
+    <div class="glossary-chips" id="gchips"></div>
+    <div class="gdef" id="gdef"><div class="gt">Tap a term above</div><div class="gd">Its plain-language definition shows here.</div></div>
+    <script>
+      (function(){
+        var T=[["Zero-day", "A vulnerability unknown to the vendor, with no patch available yet. ARTEX used none."], ["IDOR", "Insecure Direct Object Reference \u2014 reading another user's record by changing an ID the app doesn't ownership-check."], ["SQL injection", "Tricking a database query by sending input the app treats as part of the SQL command."], ["SSRF", "Server-Side Request Forgery \u2014 making the server fetch an attacker-chosen URL, often an internal one."], ["XXE", "XML External Entity \u2014 abusing an XML parser to read files or reach internal systems."], ["SAML", "An XML standard for single sign-on; a signed assertion vouches for who you are."], ["OAuth", "A standard that lets apps act on your behalf without your password, using scoped tokens."], ["IMDSv2", "The token-protected version of a cloud instance's metadata service, which blocks SSRF credential theft."], ["Maker-checker", "A control requiring two different people to create and approve an action, like a payment."], ["Web shell", "A malicious script uploaded to a server that lets an attacker run commands remotely."], ["MFA", "Multi-factor authentication \u2014 a second proof of identity beyond a password."], ["Passkey / WebAuthn", "Phishing-resistant login bound to your device, replacing passwords."], ["WAF", "Web Application Firewall \u2014 filters malicious web requests before they reach the app."], ["SAST / DAST", "Automated security testing of code (static) and of the running app (dynamic)."], ["Credential spraying", "Trying leaked or common passwords across many accounts at once."], ["Liveness check", "A test that a real, live person \u2014 not a photo or deepfake \u2014 is present during ID verification."], ["Service principal", "An app's own identity, used to authenticate without a human user."], ["Rate limiting", "Capping how many requests or login attempts are allowed in a time window."], ["Least privilege", "Giving an account only the minimum access it needs."], ["Zero Trust", "Never trust by default; verify every request regardless of network location."]];
+        var chips=document.getElementById('gchips'), box=document.getElementById('gdef');
+        T.forEach(function(pair,idx){
+          var c=document.createElement('span'); c.className='gchip'; c.textContent=pair[0];
+          c.onclick=function(){
+            Array.prototype.forEach.call(chips.children,function(x){x.classList.remove('active');});
+            c.classList.add('active');
+            box.innerHTML='<div class="gt">'+pair[0]+'</div><div class="gd">'+pair[1]+'</div>';
+          };
+          chips.appendChild(c);
+        });
+      })();
+    </script>
   </section>
 
 </main>
