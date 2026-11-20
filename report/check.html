@@ -55,11 +55,161 @@
 <header>
   <span class="tag"><span class="dot"></span> Check Your Code</span>
   <h1>Is your code <span class="accent">safe against these?</span></h1>
-  <p class="lede">For each ARTEX weakness: a one-line search to run on your own code, the vulnerable pattern to watch for, and the safe version. Run it on a repo you own or are authorized to scan.</p>
+  <p class="lede">Paste your code into the checker below to scan it against all 12 attacks in your browser. Further down, each weakness has a one-line search command and the vulnerable-vs-safe patterns for reference. Use only on code you own or are authorized to scan.</p>
   <div class="nav"><a href="index.html">Report</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="quiz.html">Quiz</a></div>
   <div class="callout"><b>Scan everything at once:</b> download <code>check-code.sh</code> from the repo and run <code>bash check-code.sh /path/to/your/project</code>. It searches for all the patterns below locally — nothing is uploaded. Treat every hit as "review this," not a confirmed bug.</div>
 </header>
 <main>
+
+<style>
+  .scan{border:1px solid var(--cyan-dim);background:linear-gradient(180deg,rgba(53,208,192,.06),rgba(53,208,192,.02));border-radius:14px;padding:20px;margin:0 0 10px}
+  .scan h2{font-family:'Space Grotesk',sans-serif;font-size:20px;margin:0 0 6px}
+  .scan p.sub{margin:0 0 14px;font-size:13.5px;color:var(--mut)}
+  .scan textarea{width:100%;min-height:150px;resize:vertical;background:#0b1119;border:1px solid var(--line2);border-radius:10px;color:#cfe3f2;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.55;padding:12px}
+  .scan textarea:focus{outline:none;border-color:var(--cyan)}
+  .scanbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{font-family:'JetBrains Mono',monospace;font-size:13px;padding:10px 18px;border-radius:999px;cursor:pointer;border:1px solid var(--cyan-dim)}
+  .btn.go{background:var(--cyan);color:#06221f;font-weight:600;border-color:var(--cyan)}
+  .btn.clr{background:transparent;color:var(--mut);border-color:var(--line2)}
+  .priv{margin-top:12px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:7px}
+  .priv .lock{color:var(--cyan)}
+  .scan ol.how{margin:0 0 14px;padding:0 0 0 2px;list-style:none;counter-reset:h;font-size:13px;color:var(--mut)}
+  .scan ol.how li{counter-increment:h;position:relative;padding:3px 0 3px 26px}
+  .scan ol.how li::before{content:counter(h);position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:50%;background:rgba(53,208,192,.12);border:1px solid var(--cyan-dim);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center}
+  .scan ol.how b{color:var(--ink)}
+  .dotc{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 2px -1px 4px}
+  .dotc.red{background:var(--red)} .dotc.amb{background:var(--amber)} .dotc.grn{background:var(--green)}
+  .btn.ex{background:transparent;color:var(--cyan);border-color:var(--cyan-dim)}
+  .banner{border-radius:10px;padding:12px 15px;margin-bottom:14px;font-size:14px;font-weight:500}
+  .banner.bad{background:rgba(230,92,92,.1);border:1px solid rgba(230,92,92,.4);color:#f3b9b9}
+  .banner.good{background:rgba(76,195,138,.1);border:1px solid rgba(76,195,138,.4);color:#bdf0d4}
+  .results{margin-top:18px;display:none}
+  .results.on{display:block}
+  .tally{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .pill{font-family:'JetBrains Mono',monospace;font-size:12px;padding:6px 12px;border-radius:999px}
+  .pill.r{color:var(--red);border:1px solid rgba(230,92,92,.4);background:rgba(230,92,92,.08)}
+  .pill.o{color:var(--green);border:1px solid rgba(76,195,138,.4);background:rgba(76,195,138,.08)}
+  .pill.m{color:var(--amber);border:1px solid rgba(240,168,58,.4);background:rgba(240,168,58,.08)}
+  .res{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--panel)}
+  .res.warn{border-color:rgba(230,92,92,.4)} .res.ok{border-color:rgba(76,195,138,.3)} .res.man{border-color:rgba(240,168,58,.35)}
+  .res .rh{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .res .ic{font-size:15px}
+  .res .rt{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px}
+  .res .rc{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);border:1px solid var(--cyan-dim);border-radius:6px;padding:2px 7px}
+  .res .verdict{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+  .res.warn .verdict{color:var(--red)} .res.ok .verdict{color:var(--green)} .res.man .verdict{color:var(--amber)}
+  .res .hits{margin:9px 0 0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .res .hits .hl{font-family:'JetBrains Mono',monospace;font-size:12px;color:#f3b9b9;background:#190f12;padding:5px 10px;border-bottom:1px solid #2a1518;white-space:pre-wrap;word-break:break-all}
+  .res .hits .hl:last-child{border-bottom:none}
+  .res .hits .hl .ln{color:var(--dim);margin-right:10px}
+  .res .act{margin:9px 0 0;font-size:13px;color:var(--mut)}
+  .res .act b{color:var(--ink)}
+</style>
+<section class="scan">
+  <h2>Paste your code — check it now</h2>
+  <p class="sub">Paste a file or snippet below and check it against all 12 ARTEX attacks instantly. This runs <b>entirely in your browser</b> — your code never leaves this page or gets uploaded, so it's safe to use with work code.</p>
+  <textarea id="codein" placeholder="Paste your code here (a route handler, a query, a config block...)" spellcheck="false"></textarea>
+  <div class="scanbtns">
+    <button class="btn go" id="runbtn">Check my code</button>
+    <button class="btn ex" id="exbtn">Load an example</button>
+    <button class="btn clr" id="clrbtn">Clear</button>
+  </div>
+  <div class="priv"><span class="lock">&#128274;</span> Nothing is sent anywhere. The check happens on your device.</div>
+  <div class="results" id="results"></div>
+</section>
+<script>
+(function(){
+  var CHECKS = [
+    {c:"A1",t:"No rate limit / MFA",k:"man",re:/(?:post|route|app\.(?:post|all))\s*\(\s*['"`][^'"`]*(?:login|signin|sign-in|authenticate|auth)\b/i,
+     act:"Login surface detected. Regex can't confirm protection — <b>verify</b> a rate limiter + phishing-resistant MFA guard this route, with step-up before payments or beneficiary changes."},
+    {c:"A2",t:"SQL injection",k:"scan",re:/(?:execute|query|rawQuery|cursor\.execute)\s*\([^)]*\+|["'`]\s*(?:SELECT|INSERT|UPDATE|DELETE)\b[^"'`]*["'`]\s*\+|f["'`]\s*(?:SELECT|INSERT|UPDATE|DELETE)/i,
+     act:"Query appears to be built by string concatenation. <b>Use bound parameters</b>: <code>query(\"...WHERE id = ?\",[id])</code> — never concatenate user input."},
+    {c:"A3",t:"Auth / SAML bypass",k:"scan",re:/SAMLResponse|verify\w*[Ss]ignature|headers\s*(?:\[|\.)\s*['"]?x?-?(?:role|user|admin|auth)/i,
+     act:"Auth/assertion or header-trust code found. <b>Validate signatures and reject unsigned assertions</b>; derive role from the server session, never from a client header."},
+    {c:"A4",t:"IDOR (broken object authz)",k:"man",re:/findById\s*\(\s*req|findOne\s*\([^)]*req\.params|WHERE\s+id\s*=\s*\$?\{?\s*req/i,
+     act:"Object lookup keyed on a request id. <b>Check ownership after fetching</b>: if <code>obj.userId !== req.user.id</code> return 404. Test as user A requesting user B's id."},
+    {c:"A5",t:"SSRF & XXE",k:"scan",re:/fetch\s*\(\s*(?:req|request|url|userUrl)|requests\.(?:get|post)\s*\([^)]*req|urlopen\s*\(|DocumentBuilderFactory|etree\.parse|new\s+SAXParser/i,
+     act:"Outbound fetch from input, or an XML parser. <b>Allow-list hosts, block 169.254/internal IPs, use IMDSv2</b>; for XML disable DTDs/external entities."},
+    {c:"A6",t:"File upload → web shell",k:"scan",re:/multer|MultipartFile|request\.files|move_uploaded_file|\.mv\s*\(|formidable/i,
+     act:"File-upload handling found. <b>Validate magic bytes + size, store outside web root with a random name, never execute</b> uploaded files."},
+    {c:"A7",t:"Secrets in code",k:"scan",re:/(?:(?:api|access|secret|private|client|auth|stripe|aws)?[_-]?(?:key|secret|token|password|passwd|pwd|apikey))\s*[:=]\s*['"][^'"\n]{6,}['"]|['"](?:sk_live_|sk_test_|AKIA|ghp_|AIza|xox[baprs]-)[A-Za-z0-9_\-]{6,}['"]/i,safeIf:/process\.env|os\.environ|getenv|import\.meta\.env|vault|secretmanager|\bconfig\./i,
+     act:"Possible hardcoded secret. <b>Move it to env/vault</b> (<code>process.env.X</code>) and <b>rotate it</b> if it was ever committed. Scan git history + JS bundles too."},
+    {c:"A8",t:"Exposed admin/debug & weak sessions",k:"scan",re:/DEBUG\s*=\s*True|['"]\/(?:debug|actuator|admin)\b|secure\s*[:=]\s*false|httpOnly\s*[:=]\s*false|sameSite\s*[:=]\s*['"]?none/i,
+     act:"Debug/admin route or weak cookie flag. <b>Remove debug routes in prod, gate admin behind MFA + IP allow-list</b>, set cookies <code>httpOnly+secure+sameSite=strict</code>."},
+    {c:"A9",t:"Payment / disbursement abuse",k:"man",re:/\b(?:disburse|payout|transfer|withdraw|remit|wire)\b/i,
+     act:"Money-movement code detected. Regex can't judge the guards — <b>verify a server-side state machine, maker‑checker, KYC and ceilings</b> before the transfer executes."},
+    {c:"A10",t:"Over-privileged OAuth apps",k:"cfg",re:null,
+     act:"Not in code — <b>review consented apps and scopes in your identity provider</b> (Entra/Okta/Google). Grant least privilege; alert on new app credentials."},
+    {c:"A11",t:"Deepfake / liveness bypass",k:"scan",re:/liveness|livenessPassed|faceMatch|selfieVerified|verified\s*[:=]\s*req\.(?:body|query)/i,
+     act:"Liveness/verification logic found. <b>Compute the verdict server-side</b> from the frames — never trust a client-sent 'passed' flag; detect virtual cameras."},
+    {c:"A12",t:"No machine-speed detection",k:"cfg",re:null,
+     act:"Not in code — this is monitoring. <b>Alert in real time on login bursts, enumeration, new app credentials</b> and sub-second permission probing; automate containment."}
+  ];
+  function esc(x){return x.replace(/[&<>]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[m];});}
+  function run(){
+    var code=document.getElementById('codein').value;
+    var out=document.getElementById('results');
+    if(!code.trim()){out.className='results';out.innerHTML='';return;}
+    var lines=code.split(/\r?\n/);
+    var nWarn=0,nOk=0,nMan=0,cards='';
+    CHECKS.forEach(function(ch){
+      var hits=[];
+      if(ch.re){
+        for(var i=0;i<lines.length;i++){
+          if(ch.re.test(lines[i])){
+            if(ch.safeIf && ch.safeIf.test(lines[i])) continue;
+            hits.push({n:i+1,s:lines[i].trim().slice(0,160)});
+            if(hits.length>=6) break;
+          }
+        }
+      }
+      var state,verdict,icon;
+      if(ch.k==='cfg'){state='man';verdict='Config review';icon='⚙️';nMan++;}
+      else if(hits.length>0){
+        if(ch.k==='man'){state='man';verdict='Review — '+hits.length+' line'+(hits.length>1?'s':'');icon='⚠️';nMan++;}
+        else{state='warn';verdict='Review — '+hits.length+' line'+(hits.length>1?'s':'');icon='❌';nWarn++;}
+      } else {
+        if(ch.k==='man'){state='ok';verdict='Nothing found — still test';icon='✅';nOk++;}
+        else{state='ok';verdict='No obvious match';icon='✅';nOk++;}
+      }
+      var hitsHtml='';
+      if(hits.length){
+        hitsHtml='<div class="hits">'+hits.map(function(h){return '<div class="hl"><span class="ln">L'+h.n+'</span>'+esc(h.s)+'</div>';}).join('')+'</div>';
+      }
+      var showAct = (state!=='ok') || ch.k!=='scan';
+      cards+='<div class="res '+state+'"><div class="rh"><span class="ic">'+icon+'</span><span class="rc">'+ch.c+'</span><span class="rt">'+ch.t+'</span><span class="verdict">'+verdict+'</span></div>'+hitsHtml+(showAct?'<p class="act">'+ch.act+'</p>':'')+'</div>';
+    });
+    var tally='<div class="tally">'+
+      (nWarn?'<span class="pill r">'+nWarn+' to fix</span>':'')+
+      '<span class="pill m">'+nMan+' manual</span>'+
+      '<span class="pill o">'+nOk+' clear</span></div>';
+    var head;
+    if(nWarn>0) head='<div class="banner bad">\u26A0\uFE0F Found '+nWarn+' thing'+(nWarn>1?'s':'')+' to fix in this code. Open each red card for the exact action \u2014 start with secrets and anything reachable without login.</div>';
+    else head='<div class="banner good">\u2705 No obvious code issues in what you pasted. Still run the '+nMan+' manual check'+(nMan>1?'s':'')+' below \u2014 scanners can\u2019t see logic flaws like IDOR or payment limits.</div>';
+    out.innerHTML=head+tally+cards;
+    out.className='results on';
+    out.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  document.getElementById('runbtn').addEventListener('click',run);
+  document.getElementById('exbtn').addEventListener('click',function(){
+    document.getElementById('codein').value=[
+      'app.post("/login", loginHandler)                 // no rate limit, no MFA',
+      'db.query("SELECT * FROM users WHERE id = " + req.params.id)',
+      'const stripeKey = "sk_live_51HxxxxxxxxxxxxEXAMPLE"',
+      'res.cookie("sid", sessionId, { secure:false, httpOnly:false })',
+      'const order = await Order.findById(req.params.id)  // no owner check',
+      'const data = await fetch(req.query.url)            // SSRF',
+      'if (req.body.livenessPassed) approveKyc()          // trusts client'
+    ].join("\n");
+    run();
+  });
+  document.getElementById('clrbtn').addEventListener('click',function(){
+    document.getElementById('codein').value='';
+    var out=document.getElementById('results');out.className='results';out.innerHTML='';
+  });
+})();
+</script>
+
 <section class="chk" id="A1">
       <div class="chead"><span class="cnum">A1</span><h3>No rate limit / no MFA</h3><span class="kind warn">Manual test needed</span></div>
       <div class="lbl">Search your code</div>
