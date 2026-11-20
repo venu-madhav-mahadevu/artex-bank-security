@@ -83,6 +83,14 @@
   .row.fix p{color:var(--ink)}
 
   /* priority */
+  .card details.deep{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .card details.deep summary{cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);list-style:none;outline:none}
+  .card details.deep summary::-webkit-details-marker{display:none}
+  .card details.deep summary:before{content:"\25B8  ";color:var(--cyan)}
+  .card details.deep[open] summary:before{content:"\25BE  "}
+  .card details.deep ul{margin:11px 0 2px;padding-left:18px}
+  .card details.deep li{font-size:13.5px;color:var(--mut);margin:7px 0;line-height:1.55}
+  .card details.deep li b{color:var(--ink);font-weight:600}
   .prio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
   .ptile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
   .ptile .r{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--cyan);letter-spacing:.04em}
@@ -261,6 +269,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Login, search and lookup endpoints with no throttle let an agent spray 150k+ attempts and stuff leaked passwords at machine speed.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Rate-limit per account + IP + device; progressive lockout tuned for <em>bursts</em>, not human pace. Phishing-resistant MFA (passkeys/WebAuthn) everywhere, with step-up on sensitive actions. Screen against breached-password lists; block legacy auth.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Alert on login bursts, impossible travel and abnormal records-per-session, especially on partner/employee portals.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Throttle logins</b> per account, per IP and per device; lock out after a short burst, not after many tries spread over hours.</li><li><b>Require phishing-resistant MFA</b> (passkeys / WebAuthn) for everyone, with step-up re-auth before payments, beneficiary changes and limit changes.</li><li><b>Screen passwords</b> against known-breached lists and block reuse.</li><li><b>Disable legacy / basic auth</b> protocols that skip MFA.</li><li><b>Alert</b> on login bursts, impossible travel and abnormal records-per-session — on partner and employee portals too.</li></ul></details>
       </div>
 
       <div class="card">
@@ -270,6 +279,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>String-concatenated queries let an agent dump credentials and read sensitive tables; error-based SQLi gives it feedback to iterate.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Parameterised queries / prepared statements everywhere; never concatenate input into SQL. Validate and allow-list input. Run the app on a least-privilege database account.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>SAST/DAST in CI, a WAF in front, and generic error messages so no stack trace leaks to the attacker.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Use parameterised queries</b> / prepared statements everywhere; never build SQL by joining strings.</li><li>Prefer an <b>ORM with bound parameters</b>, and review any remaining raw SQL by hand.</li><li><b>Validate and allow-list</b> input (type, length, format) as a second layer.</li><li>Run the app on a <b>least-privilege database account</b> — no admin or schema rights.</li><li>Add <b>SAST/DAST in CI</b> and a WAF; return generic errors so no stack trace leaks.</li></ul></details>
       </div>
 
       <div class="card">
@@ -279,6 +289,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Unsigned/forged SAML assertions and trusted client headers (e.g. an <code>isCliRequest</code> bypass) let an agent walk past login entirely.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Validate the SAML signature <em>before</em> trusting any assertion; reject unsigned assertions and pin the IdP certificate. Never trust client-supplied headers for auth decisions; centralise authentication.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Negative tests with tampered tokens and assertions in CI; fail closed on any validation error.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Validate the assertion signature</b> before trusting any claim; reject unsigned or wrongly-signed tokens.</li><li><b>Pin the IdP certificate</b> and check audience, recipient and the not-before / not-after window.</li><li>Stop replay with a <b>one-time-use assertion-ID cache</b>.</li><li><b>Never trust client headers</b> (isAdmin, isCliRequest, etc.) for authorization decisions.</li><li>Centralise authentication and add <b>negative tests with tampered tokens</b> in CI.</li></ul></details>
       </div>
 
       <div class="card">
@@ -288,6 +299,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>APIs that check login but not ownership let an agent enumerate other users' records by changing an ID — ideal for automated harvesting.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Enforce object-level authorization on every request: confirm the caller may access that specific object. Deny by default; use unguessable identifiers; centralise the check, don't scatter it.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Per-endpoint authorization tests; monitor for sequential-ID access patterns.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Check object ownership on every request</b> — confirm the caller may access that specific record, in the handler.</li><li><b>Deny by default</b>, and return <b>404 not 403</b> so you don't even confirm the object exists.</li><li>Use <b>unguessable IDs</b> (UUIDs) instead of sequential numbers.</li><li><b>Centralise the check</b> so it can't be forgotten on a new endpoint.</li><li>Add <b>per-endpoint authorization tests</b> and alert on sequential-ID access patterns.</li></ul></details>
       </div>
 
       <div class="card">
@@ -297,6 +309,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>URL-fetch and XML parsers that reach internal addresses let an agent pull cloud instance credentials from the metadata service.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Allow-list outbound destinations; block link-local and metadata IP ranges. Require IMDSv2. Disable external entities in every XML parser.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Egress filtering and network segmentation so a fetch can't reach the control plane.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Allow-list</b> the exact outbound hosts the app may call; block link-local (169.254.0.0/16) and internal (RFC1918) ranges.</li><li><b>Re-resolve and re-check the IP per request</b> to defeat DNS rebinding, and disable or re-validate redirects.</li><li><b>Require IMDSv2</b> (token-based metadata) on cloud instances.</li><li><b>Disable DTDs and external entities</b> in every XML parser.</li><li>Add <b>egress filtering and segmentation</b> so a fetch can't reach the cloud control plane.</li></ul></details>
       </div>
 
       <div class="card">
@@ -306,6 +319,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Anonymous uploads with no validation let an agent drop a web shell and run commands on the server.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Validate type and size, store files outside the web root with random names, disable execution in upload paths, scan on receipt, and serve downloads from a separate domain.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Content-type and magic-byte checks; no user-controlled paths; monitor new executable files in served directories.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Verify the real file type by magic bytes</b>, not the filename or the client-sent type; enforce a size limit.</li><li><b>Store uploads outside the web root</b> with random names and no execute permission.</li><li><b>Serve downloads</b> through a handler from a separate domain that runs nothing.</li><li><b>Scan files</b> with anti-malware on receipt; quarantine first.</li><li>Never use <b>user-controlled paths</b>; watch for new executable files in served folders.</li></ul></details>
       </div>
 
       <div class="card">
@@ -315,6 +329,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>API keys in client JavaScript, source maps, <code>.env</code> files and public repos are harvested in minutes — one case went from a GitHub search to key-vault exfiltration in 5 minutes.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Move secrets to a vault; issue short-lived, rotatable credentials. Strip secrets from client bundles and source maps. Add CI secret-scanning and pre-commit hooks that block pushes containing keys.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Rotate immediately on any exposure; monitor public repos and paste sites for your key patterns.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Keep every secret in a vault</b> and inject at runtime — never in code, .env files, client JS or source maps.</li><li>Use <b>short-lived, workload-bound credentials</b> (managed identities) and rotate regularly.</li><li>Add <b>CI secret-scanning and pre-commit hooks</b> that block any push containing a key.</li><li><b>Rotate immediately</b> on any suspected exposure and revoke the old key.</li><li><b>Monitor public repos and paste sites</b> for your key patterns.</li></ul></details>
       </div>
 
       <div class="card">
@@ -324,6 +339,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Forgotten admin pages, live debug routes, uninitialised installs and guessable session tokens give an agent a quiet way in.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Remove debug routes in production; gate admin behind auth + MFA + IP allow-list. Harden sessions: strong random tokens, short expiry, rotate on login, <code>HttpOnly/Secure/SameSite</code> cookies.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Keep an inventory of <em>every</em> internet-facing surface, including peripheral partner, employee and mobile-backend apps; close uninitialised installs.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Remove debug / actuator / console routes</b> in production; keep admin internal or behind SSO + MFA + IP allow-list.</li><li><b>Change every default credential</b> before first deploy and close uninitialised installs.</li><li>Use <b>strong random session tokens</b>, short idle expiry, and rotate the session at login and privilege change.</li><li>Set <b>HttpOnly, Secure, SameSite cookies</b> (prefer the <code>__Host-</code> prefix).</li><li>Keep an <b>inventory of every internet-facing surface</b>, including peripheral partner, employee and mobile-backend apps.</li></ul></details>
       </div>
 
       <div class="card">
@@ -333,6 +349,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Disbursal APIs invoked from whitelisted infrastructure can skip loan-creation, KYC, sanction, beneficiary, balance and limit checks when those sit only in the application layer.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Enforce a server-side state machine: no disbursal until each prior check passes. Add maker-checker (dual approval) for fund movement. Don't treat a whitelisted source IP as authorization.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Detect small "test" transactions and abnormal disbursal patterns; re-check scope after any incomplete remediation.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li>Enforce a <b>server-side state machine</b>: no disbursal until creation → KYC → sanction → beneficiary → balance → limit checks all pass.</li><li>Require <b>maker-checker</b> (two-person) approval for fund movement — the maker can't execute their own payout.</li><li><b>Verify the beneficiary</b> (penny-drop) and enforce per-transaction and daily ceilings.</li><li><b>Don't treat a whitelisted source IP as authorization</b>; re-check in the API layer.</li><li>Add <b>idempotency keys</b> and flag small “test” transactions before a large one.</li></ul></details>
       </div>
 
       <div class="card">
@@ -342,6 +359,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Trusted multi-tenant apps with broad consent let an agent authenticate <em>as the app</em> — no user sign-in, no MFA prompt — and add credentials for lasting persistence.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Grant third-party and OAuth apps least privilege; review and scope existing consents. Connect partners through scoped APIs, never shared passwords. Alert when app credentials are added or changed.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Monitor service-principal sign-ins and conditional access for app identities; revoke dormant grants.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Review every OAuth / third-party consent</b>; grant least privilege and scope tokens narrowly.</li><li>Connect partners through <b>scoped APIs, never shared passwords</b>.</li><li><b>Alert when app credentials or role grants are added or changed</b>, and monitor service-principal sign-ins across tenants.</li><li>Apply <b>conditional access</b> to app identities and revoke dormant grants.</li><li>Keep an <b>inventory of trusted multi-tenant apps</b> and their permissions.</li></ul></details>
       </div>
 
       <div class="card">
@@ -351,6 +369,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Agents try real-time deepfake video and forged ID photos, and reverse-engineer a vendor's liveness event stream to spoof the check from the client side.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Reach the liveness verdict server-side — never trust the client's event stream. Use randomised challenges, device and metadata integrity checks, and combine passive with active liveness.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Flag synthetic camera metadata and parallel verification sessions. (In the one primary record, every attempt was rejected — keep it that way.)</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Compute the liveness verdict server-side</b> — never trust a client “passed” flag or event stream.</li><li>Use <b>randomised movement challenges</b> and depth / 3D checks; combine passive and active liveness.</li><li><b>Verify device and app integrity</b> (Play Integrity / App Attest) and detect virtual cameras and hooking frameworks.</li><li>Flag <b>synthetic camera metadata</b> and parallel verification sessions.</li><li><b>Audit recovery-session API keys</b> and re-verify identity on high-risk actions.</li></ul></details>
       </div>
 
       <div class="card">
@@ -360,6 +379,7 @@
         <div class="row why"><div class="lab">Why it works</div><p>Controls tuned to human pace miss an agent that probes permissions, enumerates and pivots in seconds, inheriting sessions a human already authenticated.</p></div>
         <div class="row fix"><div class="lab">Fix</div><p>Add behavioural detection for identity-velocity anomalies, API bursts, permission-probing and dry-run capability checks. Distinguish <em>who decided</em> from <em>who logged in</em>; require explicit human confirmation for irreversible actions.</p></div>
         <div class="row prev"><div class="lab">Prevent</div><p>Baseline normal volume per identity and alert on deviation; put internal and treasury apps behind Zero Trust access.</p></div>
+        <details class="deep"><summary>How to prevent it — step by step</summary><ul><li><b>Baseline normal volume per identity</b> and alert on API bursts, enumeration and sub-second permission probing.</li><li>Distinguish <b>“who decided” from “who logged in”</b>; require explicit human confirmation for irreversible actions.</li><li>Put <b>internal and treasury apps behind Zero Trust</b> access.</li><li><b>Automate containment</b> (disable the identity, revoke tokens) on agent-velocity anomalies.</li><li>Feed detections to the <b>SOC with burst-aware thresholds</b>.</li></ul></details>
       </div>
 
     </div>
