@@ -53,8 +53,12 @@
   </div>
 
   <div id="gate" class="gate">
-    <p>Sign in with the authorized Google account to view the visit and question report.</p>
-    <button class="btn" id="signin">Sign in with Google</button>
+    <p>Sign in to view the visit and question report.</p>
+    <div style="max-width:300px;margin:0 auto;display:flex;flex-direction:column;gap:10px;text-align:left">
+      <input id="email" type="email" placeholder="Admin email" autocomplete="username" style="background:#0b1119;border:1px solid var(--line2);border-radius:10px;color:var(--ink);font-family:inherit;font-size:15px;padding:11px 13px;outline:none">
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" style="background:#0b1119;border:1px solid var(--line2);border-radius:10px;color:var(--ink);font-family:inherit;font-size:15px;padding:11px 13px;outline:none">
+      <button class="btn" id="signin">Sign in</button>
+    </div>
     <div class="err" id="err"></div>
   </div>
 
@@ -87,14 +91,13 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { firebaseConfig } from "./firebase-config.js";
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
 
   const $ = (id) => document.getElementById(id);
   const fmt = (ts) => { try { return ts && ts.toDate ? ts.toDate().toLocaleString() : ""; } catch(e){ return ""; } };
@@ -102,17 +105,17 @@
 
   $("signin").onclick = async () => {
     $("err").textContent = "";
+    const email = $("email").value.trim(), pw = $("password").value;
+    if(!email || !pw){ $("err").textContent = "Enter your admin email and password."; return; }
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithEmailAndPassword(auth, email, pw);
     } catch (e) {
-      if (e && (e.code === "auth/popup-blocked" || e.code === "auth/cancelled-popup-request" || e.code === "auth/popup-closed-by-user" || e.code === "auth/operation-not-supported-in-this-environment")) {
-        try { await signInWithRedirect(auth, provider); } catch (e2) { $("err").textContent = e2.message; }
-      } else {
-        $("err").textContent = e.message;
-      }
+      $("err").textContent = (e.code === "auth/invalid-credential" || e.code === "auth/wrong-password" || e.code === "auth/user-not-found" || e.code === "auth/invalid-email")
+        ? "Wrong email or password."
+        : e.message;
     }
   };
-  getRedirectResult(auth).catch(() => {});
+  document.addEventListener("keydown", (e) => { if(e.key === "Enter" && $("gate").style.display !== "none") $("signin").click(); });
 
   function bars(elId, counts){
     const el = $(elId); el.innerHTML = "";
