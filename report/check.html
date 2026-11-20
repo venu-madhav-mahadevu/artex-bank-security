@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEX: Check Your Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--bg2:#0e1420;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--green:#4cc38a;--red:#e65c5c;--amber:#f0a83a}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1000px 520px at 85% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 70px}
+  a{color:var(--cyan)}
+  header{padding:48px 0 24px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,42px);margin:16px 0 10px;letter-spacing:-.02em}
+  h1 .accent{background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:16px;color:var(--mut);max-width:640px}
+  .nav{margin-top:16px;font-size:14px}
+  .nav a{text-decoration:none;border:1px solid var(--line2);padding:7px 14px;border-radius:999px;margin-right:8px;display:inline-block}
+  .callout{margin-top:22px;border:1px solid var(--line2);border-left:3px solid var(--cyan);background:rgba(53,208,192,.05);border-radius:0 10px 10px 0;padding:16px 18px;font-size:14px;color:var(--mut)}
+  .callout b{color:var(--ink)}
+  .callout code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:#0c121c;border:1px solid var(--line);padding:.08em .4em;border-radius:6px;color:#bfe9e3}
+  main{padding:8px 0}
+  .chk{border-top:1px solid var(--line);padding:28px 0}
+  .chead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .cnum{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);border:1px solid var(--cyan-dim);border-radius:7px;padding:4px 9px}
+  .chk h3{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;margin:0}
+  .kind{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+  .kind.ok{color:var(--green);border:1px solid rgba(76,195,138,.4);background:rgba(76,195,138,.08)}
+  .kind.warn{color:var(--amber);border:1px solid rgba(240,168,58,.4);background:rgba(240,168,58,.08)}
+  .kind.cfg{color:var(--mut);border:1px solid var(--line2);background:var(--panel)}
+  .lbl{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px}
+  .lbl.b{color:var(--red)} .lbl.g{color:var(--green)}
+  .codewrap{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b1119}
+  .codebar{background:#0e1623;border-bottom:1px solid var(--line);padding:6px 12px}
+  .lang{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  pre{margin:0;padding:14px;overflow-x:auto}
+  code{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#cfe3f2;white-space:pre}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  .col.bad .codewrap{border-color:rgba(230,92,92,.35)}
+  .col.good .codewrap{border-color:rgba(76,195,138,.35)}
+  .note{margin-top:12px;font-size:13.5px;color:var(--mut);border-left:3px solid var(--cyan-dim);padding:8px 14px;background:rgba(53,208,192,.04);border-radius:0 8px 8px 0}
+  footer{border-top:1px solid var(--line);padding:28px 0 60px}
+  .disc{font-size:12.5px;color:var(--dim);border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:14px 16px}
+  .disc b{color:var(--mut)}
+  @media(max-width:640px){.pair{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag"><span class="dot"></span> Check Your Code</span>
+  <h1>Is your code <span class="accent">safe against these?</span></h1>
+  <p class="lede">For each ARTEX weakness: a one-line search to run on your own code, the vulnerable pattern to watch for, and the safe version. Run it on a repo you own or are authorized to scan.</p>
+  <div class="nav"><a href="index.html">Report</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="quiz.html">Quiz</a></div>
+  <div class="callout"><b>Scan everything at once:</b> download <code>check-code.sh</code> from the repo and run <code>bash check-code.sh /path/to/your/project</code>. It searches for all the patterns below locally — nothing is uploaded. Treat every hit as "review this," not a confirmed bug.</div>
+</header>
+<main>
+<section class="chk" id="A1">
+      <div class="chead"><span class="cnum">A1</span><h3>No rate limit / no MFA</h3><span class="kind warn">Manual test needed</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;post\(.*(login|signin|authenticate)&quot; .   # is there a limiter + MFA?</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>app.post(&#x27;/login&#x27;, loginHandler)   // no throttle, no MFA</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>app.post(&#x27;/login&#x27;, rateLimiter, loginHandler)
+// lock out after a burst; require phishing-resistant MFA;
+// step-up before payments / beneficiary / limit changes</code></pre></div></div>
+      </div>
+      <div class="note">Mostly config — also test it: script rapid logins and confirm lockout + MFA prompt.</div>
+    </section>
+<section class="chk" id="A2">
+      <div class="chead"><span class="cnum">A2</span><h3>SQL injection</h3><span class="kind ok">Scanner catches it</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;execute\(.*\+|query\(.*\+|\&quot;SELECT.*\&quot; *\+&quot; .</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>db.query(&quot;SELECT * FROM users WHERE id = &quot; + id)</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>db.query(&quot;SELECT * FROM users WHERE id = ?&quot;, [id])   // bound parameter</code></pre></div></div>
+      </div>
+      <div class="note">Also run sqlmap against a test endpoint — it should find nothing.</div>
+    </section>
+<section class="chk" id="A3">
+      <div class="chead"><span class="cnum">A3</span><h3>Authentication / SAML bypass</h3><span class="kind warn">Scan + manual</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;SAMLResponse|verify.*[Ss]ignature|headers\[.*(role|user|admin)&quot; .</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>const user = parseAssertion(xml);           // no signature check
+if (req.headers[&#x27;x-role&#x27;] === &#x27;admin&#x27;) {...}  // trusts a client header</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>if (!verifySignature(xml, idpCert)) reject();   // validate first, reject unsigned
+const role = req.session.role;                   // from server session, never headers</code></pre></div></div>
+      </div>
+      <div class="note">Test with a tampered / unsigned assertion — it must be rejected.</div>
+    </section>
+<section class="chk" id="A4">
+      <div class="chead"><span class="cnum">A4</span><h3>IDOR (broken object authz)</h3><span class="kind warn">Manual test needed</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;findById\(req|findOne\(.*req\.params|WHERE id =&quot; .   # then read each by eye</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>const o = await Order.findById(req.params.id);
+res.json(o);                     // any id works</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>const o = await Order.findById(req.params.id);
+if (!o || o.userId !== req.user.id) return res.status(404).end();</code></pre></div></div>
+      </div>
+      <div class="note">No scanner finds this. Test: log in as user A, request user B&#x27;s object id — you should get 404.</div>
+    </section>
+<section class="chk" id="A5">
+      <div class="chead"><span class="cnum">A5</span><h3>SSRF &amp; XXE → cloud metadata</h3><span class="kind ok">Scanner catches it</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;fetch\(|requests\.(get|post)|urlopen\(|DocumentBuilderFactory|etree\.parse&quot; .</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>const r = await fetch(req.query.url);          // SSRF
+new DocumentBuilder().parse(xml);              // XXE (DTD enabled)</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>const h = new URL(req.query.url).host;
+if (!ALLOWED.has(h)) throw new Error(&#x27;blocked&#x27;);  // allow-list; block 169.254/internal; IMDSv2
+f.setFeature(&#x27;http://apache.org/xml/features/disallow-doctype-decl&#x27;, true);  // kill XXE</code></pre></div></div>
+      </div>
+      <div class="note">Try pointing a fetch at 169.254.169.254 on a test host — it must be blocked.</div>
+    </section>
+<section class="chk" id="A6">
+      <div class="chead"><span class="cnum">A6</span><h3>File upload to web shell</h3><span class="kind warn">Scan + manual</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;multer|MultipartFile|request\.files|move_uploaded_file|\.mv\(&quot; .</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>file.mv(&#x27;./public/uploads/&#x27; + file.name);   // original name, inside web root</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>if (!ALLOWED.has(sniffType(buf)) || buf.length &gt; MAX) reject();
+save(buf, &#x27;/var/uploads/&#x27; + uuid());          // random name, outside web root, no execute</code></pre></div></div>
+      </div>
+      <div class="note">Try uploading a .jsp/.php shell to a test instance — it must be rejected or non-executable.</div>
+    </section>
+<section class="chk" id="A7">
+      <div class="chead"><span class="cnum">A7</span><h3>Secrets in code / repos</h3><span class="kind ok">Scanner catches it</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -ni &quot;(api[_-]?key|secret|password|token)\s*[:=]\s*[\&quot;\x27]&quot; .   # or: gitleaks detect</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>const stripeKey = &quot;sk_live_51H...&quot;;          // key in code</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>const stripeKey = process.env.STRIPE_KEY;    // from vault/env; rotate on exposure; scan CI</code></pre></div></div>
+      </div>
+      <div class="note">Also scan git history and JS bundles — keys hide there too.</div>
+    </section>
+<section class="chk" id="A8">
+      <div class="chead"><span class="cnum">A8</span><h3>Exposed admin/debug &amp; weak sessions</h3><span class="kind ok">Scanner catches it</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;DEBUG\s*=\s*True|/debug|/actuator|secure\s*[:=]\s*false|httpOnly\s*[:=]\s*false&quot; .</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>app.get(&#x27;/debug/env&#x27;, ...)                    // live in prod
+res.cookie(&#x27;sid&#x27;, id, { secure:false })       // weak cookie</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>// remove debug/actuator routes in prod; gate admin behind MFA + IP allow-list
+res.cookie(&#x27;__Host-sid&#x27;, id, { httpOnly:true, secure:true, sameSite:&#x27;strict&#x27; })</code></pre></div></div>
+      </div>
+      <div class="note">Change every default credential; inventory all internet-facing surfaces.</div>
+    </section>
+<section class="chk" id="A9">
+      <div class="chead"><span class="cnum">A9</span><h3>Payment / disbursement API abuse</h3><span class="kind warn">Manual test needed</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;disburse|payout|transfer|withdraw&quot; .   # then review the guard logic</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>router.post(&#x27;/disburse&#x27;, (req) =&gt; gateway.transfer(req.body.amount, req.body.to));</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>require(p.state === &#x27;APPROVED&#x27; &amp;&amp; p.kyc &amp;&amp; p.makerId !== actor.id
+        &amp;&amp; withinCeilings(p));   // server-side state machine + maker-checker + limits
+gateway.transfer(p);</code></pre></div></div>
+      </div>
+      <div class="note">Business logic — no scanner finds it. Test: call the disbursal API skipping KYC/limits; it must refuse.</div>
+    </section>
+<section class="chk" id="A10">
+      <div class="chead"><span class="cnum">A10</span><h3>Over-privileged vendor OAuth apps</h3><span class="kind cfg">Config review</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>No code grep — review consented apps &amp; scopes in your identity provider.</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>App consented with broad scopes / granted Global Administrator</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>Least-privilege scopes only; alert on new app credentials &amp; role grants; monitor service-principal sign-ins</code></pre></div></div>
+      </div>
+      <div class="note">This lives in your IdP (Entra/Okta/Google), not the codebase. Audit consents there.</div>
+    </section>
+<section class="chk" id="A11">
+      <div class="chead"><span class="cnum">A11</span><h3>Deepfake / liveness bypass</h3><span class="kind warn">Scan + manual</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>rg -n &quot;liveness|livenessPassed|faceMatch|verified\s*[:=]\s*req&quot; .</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>if (req.body.livenessPassed) approve();       // trusts the client</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>const ok = computeLivenessServerSide(frames); // verdict server-side, never client
+if (!ok || virtualCameraDetected) reject();</code></pre></div></div>
+      </div>
+      <div class="note">Test the verification flow: a client-sent &#x27;passed&#x27; flag must not be trusted.</div>
+    </section>
+<section class="chk" id="A12">
+      <div class="chead"><span class="cnum">A12</span><h3>No machine-speed detection</h3><span class="kind cfg">Config review</span></div>
+      <div class="lbl">Search your code</div>
+      <div class="codewrap"><div class="codebar"><span class="lang">shell</span></div><pre><code>No code grep — this is monitoring. Check your SIEM/SOC alerting.</code></pre></div>
+      <div class="pair">
+        <div class="col bad"><div class="lbl b">Vulnerable</div><div class="codewrap"><pre><code>Daily log review only; no alert on bursts or enumeration</code></pre></div></div>
+        <div class="col good"><div class="lbl g">Safe</div><div class="codewrap"><pre><code>Real-time alerts on login bursts, sequential enumeration, new app credentials, sub-second permission probing; automate containment</code></pre></div></div>
+      </div>
+      <div class="note">Test it with a detection drill: simulate a burst and confirm an alert fires.</div>
+    </section>
+</main>
+<footer>
+  <div class="disc"><b>Run locally, on authorized code only.</b> These are pattern searches, not a full scanner. Logic flaws (IDOR, payment sequencing, OAuth scopes, liveness, detection) need manual testing they cannot see. Verify findings on a test environment before changing production.</div>
+</footer>
+</div>
+<style>
+  .vb-launch{position:fixed;right:20px;bottom:20px;width:58px;height:58px;border-radius:50%;border:2px solid #35d0c0;background:#0e1420;cursor:pointer;z-index:9998;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:#35d0c0;font-size:20px;padding:0}
+  .vb-launch img{width:100%;height:100%;object-fit:cover;display:block}
+  .vb-launch:after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid rgba(53,208,192,.5);animation:vbpulse 2s ease-out infinite}
+  @keyframes vbpulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.35);opacity:0}}
+  @media(prefers-reduced-motion:reduce){.vb-launch:after{animation:none}}
+  .vb-panel{position:fixed;right:20px;bottom:88px;width:350px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 120px);background:linear-gradient(180deg,#121a28,#0e1420);border:1px solid #223044;border-radius:16px;z-index:9999;display:none;flex-direction:column;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.55);font-family:'Inter',system-ui,sans-serif}
+  .vb-panel.open{display:flex}
+  .vb-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #223044;background:#0d131d}
+  .vb-ava{width:34px;height:34px;border-radius:9px;overflow:hidden;background:linear-gradient(135deg,#35d0c0,#2b7fd6);display:flex;align-items:center;justify-content:center;color:#06202b;font-weight:700;font-size:14px;font-family:'Space Grotesk',sans-serif}
+  .vb-ava img{width:100%;height:100%;object-fit:cover;display:block}
+  .vb-head h4{margin:0;font-size:15px;color:#e8eef6;font-weight:600}
+  .vb-head p{margin:0;font-size:11px;color:#6f8299}
+  .vb-x{margin-left:auto;background:none;border:none;color:#9fb2c8;font-size:20px;cursor:pointer;line-height:1;padding:4px}
+  .vb-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .vb-msg{max-width:90%;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.55;color:#9fb2c8}
+  .vb-bot{align-self:flex-start;background:#17212f;border:1px solid #223044;border-top-left-radius:4px}
+  .vb-me{align-self:flex-end;background:rgba(53,208,192,.12);border:1px solid #1d7a72;border-top-right-radius:4px;color:#dff6f2}
+  .vb-msg b{color:#e8eef6;font-weight:600}
+  .vb-msg code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:#0c121c;border:1px solid #223044;padding:.05em .35em;border-radius:5px;color:#bfe9e3}
+  .vb-src{margin-top:6px;font-size:11px;color:#6f8299}
+  .vb-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
+  .vb-chip{font-size:11.5px;color:#35d0c0;background:rgba(53,208,192,.07);border:1px solid #1d7a72;border-radius:999px;padding:5px 10px;cursor:pointer}
+  .vb-in{display:flex;gap:8px;border-top:1px solid #223044;padding:10px;background:#0d131d}
+  .vb-in input{flex:1;background:#0b1119;border:1px solid #2d4056;border-radius:9px;color:#e8eef6;font-family:inherit;font-size:14px;padding:9px 11px;outline:none}
+  .vb-in button{background:#35d0c0;color:#06202b;border:none;border-radius:9px;font-weight:600;font-size:13px;padding:0 14px;cursor:pointer;font-family:inherit}
+</style>
+<button class="vb-launch" id="vbLaunch" aria-label="Open Venu Assistant"><img src="https://github.com/venu-madhav-mahadevu.png?size=88" alt="Venu" onerror="this.remove();this.parentNode.textContent='VA'"></button>
+<div class="vb-panel" id="vbPanel" role="dialog" aria-label="Venu Assistant">
+  <div class="vb-head">
+    <div class="vb-ava"><img src="https://github.com/venu-madhav-mahadevu.png?size=68" alt="" onerror="this.remove();this.parentNode.textContent='VA'"></div>
+    <div><h4>Venu Assistant</h4><p>Ask about ARTEX &amp; defenses</p></div>
+    <button class="vb-x" id="vbClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="vb-log" id="vbLog"></div>
+  <div class="vb-chips" id="vbChips"></div>
+  <div class="vb-in"><input id="vbQ" placeholder="Ask a question…" autocomplete="off"><button id="vbSend">Ask</button></div>
+</div>
+<script>
+(function(){
+var KB=[
+ {t:"what is artex",k:"what is artex define definition overview tool framework",a:"<b>ARTEX</b> is an open-source, AI-driven autonomous penetration-testing framework, released on GitHub on 26 July 2026 by a developer called Autumn-27 under AGPL-3.0. LLM agents run security tests from reconnaissance through exploitation, with a web dashboard.",s:"Report"},
+ {t:"who made artex",k:"who made created developer author built autumn owner",a:"Built by <b>Autumn-27</b> (reported to be security engineer Li Puhua) as a side project for organisations to test their own networks. The same author made ScopeSentry, used for recon. It was made closed-source on 8 Oct 2026 after being linked to attacks.",s:"Report"},
+ {t:"how does artex work",k:"how work works loop agents planner worker architecture",a:"An operator sets a plain-language <b>goal</b>. A Planner agent breaks it into steps; Worker agents (~3 per task) run real tools (Nmap, curl, sqlmap). They loop — explore, decide, execute — until the goal is met or stopped. State lives in PostgreSQL.",s:"Report"},
+ {t:"requirements run",k:"requirements run install setup need docker postgres go node deploy",a:"You need an <b>isolated host</b>, Docker + Docker Compose (or Go 1.26.3+, Node 20+, Git), a <b>PostgreSQL</b> database, and an <b>LLM API key</b> (Anthropic or OpenAI). Console runs on port <code>8787</code>. Authorized lower environment only.",s:"Report"},
+ {t:"which models",k:"models llm claude gpt deepseek which ai model",a:"ARTEX is <b>model-agnostic</b> — Anthropic Claude, OpenAI GPT, or any OpenAI-compatible endpoint (DeepSeek, GLM, Grok, Kimi). It is a harness, not a model.",s:"Report"},
+ {t:"is it legal",k:"legal illegal allowed authorization authorized permission crime",a:"Running ARTEX against systems you don't own or aren't authorised to test is <b>illegal</b>. Use it only on your own or approved systems, in an isolated lower environment, with security-team sign-off.",s:"Guidance"},
+ {t:"zero day",k:"zero day zeroday new vulnerability headline finding",a:"ARTEX used <b>no zero-days</b>. It chained known, preventable weaknesses at machine speed. Speed, scale and a lower skill floor are what changed.",s:"Report"},
+ {t:"attack chain how attacked",k:"attack chain how attacked stages flow kill steps phases",a:"Chain: <b>goal → planner + worker agents loop →</b> 1) Recon, 2) Initial access, 3) Exploit &amp; chain, 4) Privilege &amp; lateral, 5) Exfiltrate &amp; persist.",s:"Report"},
+ {t:"types of attack",k:"types how many categories list attacks methods eight 8",a:"<b>8 types:</b> recon, credential attacks, exploitation &amp; chaining, supply-chain, secret harvesting, identity/deepfake bypass, data exfiltration, post-access operations.",s:"Report"},
+ {t:"credential spraying rate limit mfa",k:"credential spray spraying stuffing password brute login rate limit mfa",a:"<b>Credential spraying:</b> thousands of guesses against logins with no lockout (151,000+ in one case). <b>Fix:</b> rate-limit per account/IP, burst lockout, phishing-resistant MFA.",s:"Fixes §1"},
+ {t:"sql injection",k:"sql injection sqli database query inject",a:"<b>SQL injection:</b> input pasted into a query lets the agent read any data. <b>Fix:</b> parameterised queries; least-privilege DB account.",s:"Fixes §2"},
+ {t:"authentication bypass saml",k:"auth authentication bypass saml signature sso unsigned token",a:"<b>Auth bypass:</b> trusting a login token (e.g. unsigned SAML) without checking it. <b>Fix:</b> verify the signature before trusting any assertion; reject unsigned.",s:"Fixes §3"},
+ {t:"idor",k:"idor object authorization ownership access control id",a:"<b>IDOR:</b> checks login but not ownership, so changing an ID shows another user's data. <b>Fix:</b> check ownership on every request; return 404 if not yours.",s:"Fixes §4"},
+ {t:"ssrf xxe metadata",k:"ssrf xxe metadata imds cloud credentials fetch url",a:"<b>SSRF/XXE:</b> tricking the app into fetching an internal address to steal cloud credentials. <b>Fix:</b> allow-list outbound hosts, block internal ranges, require IMDSv2, disable XML entities.",s:"Fixes §5"},
+ {t:"file upload web shell",k:"file upload web shell rce remote code execution",a:"<b>File upload → web shell:</b> an uploaded 'image' is code the server runs. <b>Fix:</b> validate real type, random name, store where nothing executes.",s:"Fixes §6"},
+ {t:"secrets api keys",k:"secret secrets api key vault leaked github env hardcoded",a:"<b>Secret harvesting:</b> keys in code/JS/GitHub found in minutes (Key Vault emptied in 5 min). <b>Fix:</b> vault secrets, short-lived keys, CI scanning, rotate on exposure.",s:"Fixes §7"},
+ {t:"admin debug pages",k:"admin debug page exposed default credentials panel console",a:"<b>Exposed admin/debug:</b> forgotten panels with default passwords. <b>Fix:</b> remove debug routes, gate admin behind MFA + IP allow-list, change defaults.",s:"Fixes §8"},
+ {t:"weak sessions",k:"session sessions cookie token weak hijack",a:"<b>Weak sessions:</b> guessable cookies let the agent hijack a session. <b>Fix:</b> strong random tokens, short expiry, host-locked secure cookies, rotate on privilege change.",s:"Fixes §9"},
+ {t:"payment api abuse",k:"payment api disbursal fund transfer money cert maker checker kyc",a:"<b>Payment-API abuse:</b> disbursal APIs called directly skip KYC/limits. <b>Fix:</b> server-side state machine, maker-checker, per-transaction ceilings.",s:"Fixes §10"},
+ {t:"oauth vendor app",k:"oauth app vendor connectwise service principal consent supply chain",a:"<b>Over-privileged OAuth apps:</b> a trusted app abused to sign in as itself, bypassing user MFA (ConnectWise: 2,250+ tenants). <b>Fix:</b> least-privilege consent, monitor service principals, alert on new app credentials.",s:"Fixes §11"},
+ {t:"deepfake liveness",k:"deepfake liveness kyc identity verification face selfie",a:"<b>Deepfake liveness:</b> deepfakes tried against liveness checks — rejected when the verdict was server-side. <b>Fix:</b> compute liveness server-side, never trust a client flag, detect injection.",s:"Fixes §12"},
+ {t:"detection",k:"detection detect monitor siem alert machine speed hunt",a:"<b>Detection:</b> human-paced monitoring misses second-scale agents. <b>Fix:</b> alert on login bursts, sequential ID access, permission probing, new app credentials; confirm irreversible actions.",s:"Fixes §13"},
+ {t:"where to start priority",k:"where start first priority fix order do first roadmap",a:"<b>Fix first:</b> MFA + rate limiting, rotate/vault secrets, kill default creds &amp; exposed admin, parameterise queries, payment-API state machine, vendor-app review, SSRF/IMDSv2/XXE, server-side liveness, machine-speed detection.",s:"Report"},
+ {t:"korean banks",k:"korea korean banks shinhan kookmin hana incident breach",a:"<b>Korean banks:</b> breached via SQLi and auth bypass in peripheral systems (not customer banking); ~67,000 people's data exposed, no money taken.",s:"Report"},
+ {t:"connectwise storm",k:"connectwise storm 0940 microsoft tenants oauth incident",a:"<b>ConnectWise / Storm-0940:</b> after a password spray, the actor signed in as the vendor apps across 2,250+ tenants with stolen app credentials — no MFA prompt.",s:"Report"}
+];
+var STOP=new Set("the a an of to in on for and or is are was how do does what why with your you it its that this can i me my".split(" "));
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(function(w){return w&&!STOP.has(w);});}
+function ans(q){var qs=norm(q);if(!qs.length)return null;var best=null,bs=0;for(var i=0;i<KB.length;i++){var e=KB[i],kw=new Set(norm(e.k)),ti=new Set(norm(e.t)),sc=0;for(var j=0;j<qs.length;j++){var w=qs[j];if(ti.has(w))sc+=3;else if(kw.has(w))sc+=2;else if(e.a.toLowerCase().indexOf(w)>=0)sc+=1;}if(sc>bs){bs=sc;best=e;}}return bs<2?null:best;}
+var log=document.getElementById('vbLog'),q=document.getElementById('vbQ'),panel=document.getElementById('vbPanel');
+function esc(s){return s.replace(/[<>&]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;'}[c];});}
+function add(who,h,src){var d=document.createElement('div');d.className='vb-msg '+(who==='me'?'vb-me':'vb-bot');d.innerHTML=h;if(src){var s=document.createElement('div');s.className='vb-src';s.textContent='Source: '+src;d.appendChild(s);}log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function addFb(qq){var d=document.createElement('div');d.className='vb-msg vb-bot';d.style.fontSize='12px';var s=document.createElement('span');s.style.color='#6f8299';s.textContent='Was this helpful? ';d.appendChild(s);[['\uD83D\uDC4D',true],['\uD83D\uDC4E',false]].forEach(function(pr){var b=document.createElement('span');b.textContent=pr[0];b.style.cssText='cursor:pointer;margin:0 5px;font-size:15px';b.onclick=function(){try{window.vbLogFeedback&&window.vbLogFeedback(pr[1],qq);}catch(_){}d.innerHTML='<span style="color:#35d0c0">Thanks for the feedback!</span>';};d.appendChild(b);});log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function addRel(list){if(!list||!list.length)return;var d=document.createElement('div');d.className='vb-msg vb-bot';var t=document.createElement('div');t.style.cssText='font-size:11px;color:#6f8299;margin-bottom:6px';t.textContent='Related';d.appendChild(t);list.forEach(function(x){var c=document.createElement('span');c.className='vb-chip';c.style.margin='3px 4px 0 0';c.textContent=x;c.onclick=function(){ask(x);};d.appendChild(c);});log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function ask(text){if(!text.trim())return;try{window.vbLogAsk&&window.vbLogAsk(text);}catch(_){}add('me',esc(text));var e=(window.VenuAssistant&&window.VenuAssistant.answer(text))||ans(text);if(e){add('bot',e.a,e.s);addRel(e.related);addFb(text);}else add('bot',"I don't have that yet. Ask about <b>ARTEX</b>, how it works, an attack (SQL injection, SSRF, credential spraying…), or a fix.");q.value='';}
+document.getElementById('vbSend').onclick=function(){ask(q.value);};
+q.addEventListener('keydown',function(e){if(e.key==='Enter')ask(q.value);});
+var started=false;
+function openPanel(){panel.classList.add('open');q.focus();if(!started){started=true;add('bot',"Hi, I'm <b>Venu Assistant</b>. Ask me about ARTEX and how to defend against it.");var sug=["What is ARTEX?","How does it work?","Attack types?","Fix SQL injection?","Where to start?"];var c=document.getElementById('vbChips');sug.forEach(function(x){var el=document.createElement('span');el.className='vb-chip';el.textContent=x;el.onclick=function(){ask(x);};c.appendChild(el);});}}
+document.getElementById('vbLaunch').onclick=function(){panel.classList.contains('open')?panel.classList.remove('open'):openPanel();};
+document.getElementById('vbClose').onclick=function(){panel.classList.remove('open');};
+})();
+</script>
+
+<div id="fb-count" style="position:fixed;left:16px;bottom:16px;z-index:9997;display:none;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9fb2c8;background:#0e1420;border:1px solid #223044;border-radius:999px;padding:6px 12px">Site visits: …</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, runTransaction, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { firebaseConfig } from "./firebase-config.js";
+  let analytics=null;
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("PASTE") === -1) {
+    const app = initializeApp(firebaseConfig);
+    const fdb = getFirestore(app);
+    window.vbLogAsk = function(q){ try{ addDoc(collection(fdb,"asks"),{ q:String(q).slice(0,500), page:location.pathname, ts:serverTimestamp() }); }catch(e){} };
+    window.vbLogFeedback = function(h,q){ try{ addDoc(collection(fdb,"feedback"),{ helpful:!!h, q:String(q||"").slice(0,500), page:location.pathname, ts:serverTimestamp() }); }catch(e){} };
+    function vbDevice(){var ua=navigator.userAgent,o='Other',b='Other';if(/Windows/.test(ua))o='Windows';else if(/Mac OS X|Macintosh/.test(ua))o='macOS';else if(/Android/.test(ua))o='Android';else if(/iPhone|iPad|iPod/.test(ua))o='iOS';else if(/Linux/.test(ua))o='Linux';if(/Edg\//.test(ua))b='Edge';else if(/OPR\/|Opera/.test(ua))b='Opera';else if(/Chrome\//.test(ua))b='Chrome';else if(/Firefox\//.test(ua))b='Firefox';else if(/Safari\//.test(ua))b='Safari';var dv=/Mobi|Android|iPhone|iPod/.test(ua)?'Mobile':(/iPad|Tablet/.test(ua)?'Tablet':'Desktop');return{os:o,browser:b,device:dv,screen:screen.width+'x'+screen.height,lang:navigator.language||'',tz:(Intl.DateTimeFormat().resolvedOptions().timeZone)||'',ref:document.referrer||'direct'};}
+    try{ addDoc(collection(fdb,"visits"), Object.assign({page:location.pathname, ts:serverTimestamp()}, vbDevice())); }catch(e){}
+    try {
+      const { getAnalytics, logEvent } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js");
+      analytics = getAnalytics(app);
+      logEvent(analytics, "page_view", { page_path: location.pathname });
+    } catch (e) {}
+    try {
+      const db = getFirestore(app);
+      const ref = doc(db, "stats", "visits");
+      const n = await runTransaction(db, async (tx) => {
+        const s = await tx.get(ref);
+        const c = (s.exists() ? (s.data().count || 0) : 0) + 1;
+        tx.set(ref, { count: c });
+        return c;
+      });
+      const el = document.getElementById("fb-count");
+      el.textContent = "Site visits: " + n;
+      el.style.display = "block";
+    } catch (e) {}
+  }
+</script>
+<script src="assistant-engine.js"></script>
+</body>
+</html>
