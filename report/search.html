@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--green:#4cc38a;--red:#e65c5c;--amber:#f0a83a;--purple:#8b7 cf}
+  :root{--purple:#9a86f5}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 560px at 85% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--cyan)}
+  header{padding:44px 0 8px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,40px);margin:16px 0 10px;letter-spacing:-.02em}
+  .lede{font-size:16px;color:var(--mut);max-width:640px}
+  nav.top{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 4px}
+  nav.top a{text-decoration:none;border:1px solid var(--line2);padding:6px 13px;border-radius:999px;font-size:13px;color:var(--mut);transition:.15s}
+  nav.top a:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+  nav.top a.here{border-color:var(--cyan);color:var(--cyan);background:rgba(53,208,192,.08)}
+  .foot{border-top:1px solid var(--line);margin-top:40px;padding-top:18px;font-size:12.5px;color:var(--dim)}
+  h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag"><span class="dot"></span> Search</span>
+  <h1>Search the site</h1>
+  <p class="lede">Type a topic and jump straight to the right page. Searches titles and keywords across the whole reference.</p>
+  <nav class="top"><a href="index.html">Report</a><a href="learn.html">Engineers vs attackers</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="check.html">Check your code</a><a href="scorecard.html">Self-assessment</a><a href="cases.html">Case studies</a><a href="frameworks.html">Frameworks</a><a href="faq.html">FAQ</a><a href="search.html">Search</a><a href="quiz.html">Quiz</a></nav>
+</header>
+
+<style>
+  .sbox input{width:100%;background:#0b1119;border:1px solid var(--line2);border-radius:11px;color:var(--ink);font-size:16px;padding:13px 15px;margin:6px 0 16px}
+  .sbox input:focus{outline:none;border-color:var(--cyan)}
+  .res a{display:block;text-decoration:none;border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:10px;background:var(--panel);transition:.15s}
+  .res a:hover{border-color:var(--cyan-dim);transform:translateX(2px)}
+  .res .t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--ink)}
+  .res .k{font-size:12.5px;color:var(--dim);margin-top:3px;font-family:'JetBrains Mono',monospace}
+  .none{color:var(--dim);display:none}
+</style>
+<div class="sbox"><input id="s" type="text" placeholder="Search… e.g. SSRF, payments, OWASP, rotate key" autofocus></div>
+<div class="res" id="res"></div>
+<div class="none" id="none">Nothing matched. Try a broader term like &ldquo;sql&rdquo;, &ldquo;mfa&rdquo; or &ldquo;audit&rdquo;.</div>
+<script>
+(function(){
+  var DATA=[["Report", "index.html", "overview artex attack chain 12 issues severity matrix glossary fix first priority analogy"], ["Engineers vs attackers", "learn.html", "chapters engineers use power vulnerabilities hackers how awareness"], ["Attacks explained", "examples.html", "examples per attack diagram attacker weakpoint impact sql ssrf credential"], ["Fixes with code", "fixes.html", "code fixes parameterized queries mfa rate limit ssrf xxe upload secrets cookies payment"], ["Check your code", "check.html", "local scan check-code.sh gitleaks semgrep grep vulnerable safe patterns"], ["Self-assessment", "scorecard.html", "readiness score gauge questionnaire maturity controls priorities gaps"], ["Case studies", "cases.html", "korean banks connectwise storm oauth timeline incident lessons"], ["Frameworks", "frameworks.html", "owasp top 10 mitre att&ck nist csf pci dss soc2 mapping audit"], ["FAQ", "faq.html", "questions answers legal zero-day safe rotate key paste code identity perimeter"], ["Quiz", "quiz.html", "test yourself questions score flashcards practice"]];
+  var s=document.getElementById('s'), res=document.getElementById('res'), none=document.getElementById('none');
+  function render(list){
+    res.innerHTML=list.map(function(d){return '<a href="'+d[1]+'"><div class="t">'+d[0]+'</div><div class="k">'+d[1]+'</div></a>';}).join('');
+    none.style.display=list.length?'none':'block';
+  }
+  function run(){
+    var t=s.value.trim().toLowerCase();
+    if(!t){ render(DATA); return; }
+    var terms=t.split(/\s+/);
+    var hits=DATA.filter(function(d){var hay=(d[0]+' '+d[2]).toLowerCase();return terms.every(function(w){return hay.indexOf(w)>=0;});});
+    render(hits);
+  }
+  s.addEventListener('input',run); render(DATA);
+})();
+</script>
+<div class="foot">Defensive reference only. Use ARTEX strictly on systems you own or are authorized to test. Search runs entirely in your browser over a static index of these pages.</div>
+</div>
+</body>
+</html>

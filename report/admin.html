@@ -78,12 +78,16 @@
       <div class="card"><h2 style="margin-top:0">By page</h2><div id="b-page"></div></div>
     </div>
 
+    <div class="card" style="margin-bottom:16px"><h2 style="margin-top:0">Visits over time (last 14 days)</h2><div id="chart-time"></div></div>
+    <div class="card" style="margin-bottom:16px"><h2 style="margin-top:0">Top questions</h2><div id="top-asks"></div></div>
+
     <h2>Questions asked</h2>
     <table id="t-asks"><thead><tr><th>When</th><th>Question</th><th>Page</th></tr></thead><tbody></tbody></table>
     <div class="muted" id="asks-empty" style="display:none">No questions yet.</div>
 
     <h2 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">Visitor responses <button class="btn ghost" id="exp-intro" style="font-size:12px;padding:5px 12px">Export CSV</button></h2>
     <div class="muted" id="intro-sum" style="margin:-4px 0 8px"></div>
+    <input id="intro-q" type="text" placeholder="Search responses (name, message, page)…" style="width:100%;max-width:340px;background:#0b1119;border:1px solid var(--line2);border-radius:9px;color:var(--ink);font-size:13px;padding:9px 12px;margin:0 0 10px">
     <table id="t-intro"><thead><tr><th>When</th><th>Name</th><th>Likes it?</th><th>Message / request</th><th>Visitor</th><th>Page</th></tr></thead><tbody></tbody></table>
     <div class="muted" id="intro-empty" style="display:none">No responses yet.</div>
 
@@ -134,6 +138,21 @@
     if(!entries.length) el.innerHTML = '<div class="muted">No data yet.</div>';
   }
 
+  function timeBars(elId, pairs){
+    const el=$(elId); el.innerHTML="";
+    let max=1; pairs.forEach(p=>{ if(p[1]>max)max=p[1]; });
+    pairs.forEach(p=>{ const row=document.createElement("div"); row.className="bar";
+      row.innerHTML='<span class="lab">'+esc(p[0])+'</span><span class="track"><span class="fill" style="width:'+Math.round(p[1]/max*100)+'%"></span></span><span class="v">'+p[1]+'</span>';
+      el.appendChild(row); });
+    if(!pairs.length) el.innerHTML='<div class="muted">No data yet.</div>';
+  }
+  function lastDays(visits,nd){
+    const today=new Date(), map={};
+    for(let i=nd-1;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); map[d.toISOString().slice(5,10)]=0; }
+    visits.forEach(v=>{ try{ const ts=(v.ts&&v.ts.toDate)?v.ts.toDate():new Date(v.ts); const k=ts.toISOString().slice(5,10); if(k in map)map[k]++; }catch(e){} });
+    return Object.entries(map);
+  }
+
   async function loadReport(){
     // total visit counter
     try { const c = await getDoc(doc(db,"stats","visits")); $("s-visits").textContent = c.exists() ? (c.data().count||0) : 0; } catch(e){}
@@ -143,6 +162,7 @@
     $("s-logged").textContent = visits.length;
     const by = (f)=>{const m={};visits.forEach(v=>{const k=v[f]||"?";m[k]=(m[k]||0)+1;});return m;};
     bars("b-device", by("device")); bars("b-browser", by("browser")); bars("b-os", by("os")); bars("b-page", by("page"));
+    timeBars("chart-time", lastDays(visits,14));
     $("s-countries").textContent = Object.keys(by("tz")).length;
     const vt = $("t-visits").querySelector("tbody"); vt.innerHTML = "";
     visits.slice(0,80).forEach(v => {
@@ -154,6 +174,7 @@
     const aSnap = await getDocs(query(collection(db,"asks"), orderBy("ts","desc"), limit(500)));
     const asks = []; aSnap.forEach(d => asks.push(d.data()));
     $("s-asks").textContent = asks.length;
+    bars("top-asks", (function(){const m={};asks.forEach(a=>{const q=(a.q||"").trim();if(q)m[q]=(m[q]||0)+1;});return m;})());
     const at = $("t-asks").querySelector("tbody"); at.innerHTML = "";
     if(!asks.length) $("asks-empty").style.display = "block";
     asks.forEach(a => {
@@ -180,6 +201,7 @@
         tr.innerHTML = `<td>${esc(fmt(x.ts))}</td><td>${esc(x.name||"\u2014")}</td><td>${like}</td><td>${esc(x.msg||"\u2014")}</td><td>${esc(x.visitorId||"\u2014")}</td><td>${esc(x.page||"")}</td>`;
         it.appendChild(tr);
       });
+      (function(){const iq=$("intro-q"); if(iq) iq.oninput=function(){const t=iq.value.toLowerCase(); it.querySelectorAll("tr").forEach(function(r){ r.style.display = r.textContent.toLowerCase().indexOf(t)>=0 ? "" : "none"; });};})();
       const expBtn=$("exp-intro");
       if(expBtn) expBtn.onclick=function(){
         const rows=[["When","Name","Likes","Message","Visitor","Page"]].concat(intros.map(x=>[fmt(x.ts),x.name||"",x.liked===true?"yes":(x.liked===false?"no":""),(x.msg||"").replace(/\s+/g," "),x.visitorId||"",x.page||""]));
