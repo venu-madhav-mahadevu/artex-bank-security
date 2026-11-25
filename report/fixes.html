@@ -455,10 +455,18 @@ function cp(btn){
 #vbIntro .x{position:absolute;top:9px;right:12px;cursor:pointer;color:#6f8299;font-size:17px;line-height:1}
 #vbFab{position:fixed;top:14px;right:16px;z-index:99998;width:46px;height:46px;border-radius:50%;background:#121a28;border:1px solid #2d4056;color:#35d0c0;font-size:20px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:0}
 #vbFab:hover{border-color:#35d0c0;background:rgba(53,208,192,.12)}
+#vbFab{overflow:hidden}
+#vbFab img{width:100%;height:100%;object-fit:cover;display:block}
+#vbIntro .vbAgent{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#vbIntro .vbAgent img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid #2d4056}
+#vbIntro .vbAgent .vbName{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:#e8eef6}
+#vbIntro .vbAgent .vbRole{font-size:11px;color:#6f8299}
+#vbIntro .vbAgent.noimg:before{content:"V";display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:#0e1420;border:1px solid #35d0c0;color:#35d0c0;font-weight:700;font-size:15px;flex-shrink:0}
 @media (max-width:640px){#vbIntro{bottom:auto;top:12px;max-height:82vh;overflow-y:auto}}
 </style>
 <div id="vbIntro" role="dialog" aria-label="Quick hello">
   <span class="x" id="vbIX">&times;</span>
+  <div class="vbAgent"><img src="https://github.com/venu-madhav-mahadevu.png?size=72" alt="" onerror="this.remove();this.parentNode.classList.add('noimg')"><div><div class="vbName">Venu</div><div class="vbRole">ARTEX security</div></div></div>
   <h4>&#128075; Quick hello</h4>
   <p>Mind sharing your name and any feedback? All optional &mdash; you can skip.</p>
   <input id="vbIName" type="text" placeholder="Your name (optional)" maxlength="80" autocomplete="off">
@@ -502,7 +510,7 @@ function cp(btn){
   }
   function open(){ box.innerHTML=TEMPLATE; bind(); box.style.display=''; requestAnimationFrame(function(){ box.classList.add('show'); }); }
   var fab=document.createElement('button');
-  fab.id='vbFab'; fab.type='button'; fab.title='Send feedback'; fab.setAttribute('aria-label','Send feedback'); fab.innerHTML='💬';
+  fab.id='vbFab'; fab.type='button'; fab.title='Send feedback'; fab.setAttribute('aria-label','Send feedback'); fab.innerHTML='<img src="https://github.com/venu-madhav-mahadevu.png?size=96" alt="" onerror="this.remove();this.parentNode.textContent=\'V\'">';
   fab.onclick=open;
   document.body.appendChild(fab);
   (function(){
