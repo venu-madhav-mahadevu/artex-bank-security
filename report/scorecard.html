@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEX Self-Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--green:#4cc38a;--red:#e65c5c;--amber:#f0a83a;--purple:#8b7 cf}
+  :root{--purple:#9a86f5}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 560px at 85% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--cyan)}
+  header{padding:44px 0 8px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,40px);margin:16px 0 10px;letter-spacing:-.02em}
+  .lede{font-size:16px;color:var(--mut);max-width:640px}
+  nav.top{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 4px}
+  nav.top a{text-decoration:none;border:1px solid var(--line2);padding:6px 13px;border-radius:999px;font-size:13px;color:var(--mut);transition:.15s}
+  nav.top a:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+  nav.top a.here{border-color:var(--cyan);color:var(--cyan);background:rgba(53,208,192,.08)}
+  .foot{border-top:1px solid var(--line);margin-top:40px;padding-top:18px;font-size:12.5px;color:var(--dim)}
+  h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag"><span class="dot"></span> Self-Assessment</span>
+  <h1>How ready are you?</h1>
+  <p class="lede">Answer 15 quick control questions. Everything runs in your browser &mdash; nothing is saved or sent. You'll get a readiness score and a prioritized action list.</p>
+  <nav class="top"><a href="index.html">Report</a><a href="learn.html">Engineers vs attackers</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="check.html">Check your code</a><a href="scorecard.html" class="here">Self-assessment</a><a href="cases.html">Case studies</a><a href="frameworks.html">Frameworks</a><a href="faq.html">FAQ</a><a href="quiz.html">Quiz</a></nav>
+</header>
+
+<style>
+  .board{display:flex;gap:20px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:16px;padding:20px;background:linear-gradient(180deg,rgba(53,208,192,.05),transparent);margin-bottom:8px}
+  .gauge{position:relative;width:150px;height:150px;flex-shrink:0}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:34px;line-height:1}
+  .gauge .pct{font-size:12px;color:var(--mut);font-family:'JetBrains Mono',monospace}
+  .verdict h3{margin:0 0 4px;font-family:'Space Grotesk',sans-serif;font-size:22px}
+  .verdict p{margin:0;color:var(--mut);font-size:14px;max-width:420px}
+  .meter{margin-top:12px}
+  .meter .bar{height:8px;border-radius:999px;background:#0b1119;border:1px solid var(--line);overflow:hidden}
+  .meter .fill{height:100%;width:0;transition:width .8s cubic-bezier(.2,.7,.2,1)}
+  .qrow{border-top:1px solid var(--line);padding:16px 0;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+  .qtext{font-size:14.5px;max-width:560px;display:flex;align-items:flex-start;gap:9px}
+  .sev{width:9px;height:9px;border-radius:50%;margin-top:7px;flex-shrink:0}
+  .sev.s5{background:var(--red)} .sev.s4{background:var(--amber)} .sev.s3{background:var(--cyan)} .sev.s2{background:var(--dim)}
+  .opts{display:flex;gap:6px;flex-shrink:0}
+  .opt{cursor:pointer;border:1px solid var(--line2);background:transparent;color:var(--mut);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 13px;transition:.12s}
+  .opt.yes.on{background:rgba(76,195,138,.15);border-color:var(--green);color:var(--green)}
+  .opt.part.on{background:rgba(240,168,58,.15);border-color:var(--amber);color:var(--amber)}
+  .opt.no.on{background:rgba(230,92,92,.15);border-color:var(--red);color:var(--red)}
+  .actions{margin-top:26px}
+  .act-card{border:1px solid var(--line);border-left:3px solid var(--red);border-radius:0 10px 10px 0;padding:12px 15px;margin-bottom:10px;background:var(--panel)}
+  .act-card.part{border-left-color:var(--amber)}
+  .act-card .h{font-weight:600;font-size:14px;margin-bottom:3px}
+  .act-card .f{font-size:13px;color:var(--mut)}
+  .act-card a{font-size:12px}
+  .hint{font-size:12.5px;color:var(--dim);margin-top:4px}
+  .progress{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mut);margin:14px 0 2px}
+</style>
+<div class="board">
+  <div class="gauge">
+    <svg width="150" height="150" viewBox="0 0 150 150">
+      <circle cx="75" cy="75" r="64" fill="none" stroke="#1a2536" stroke-width="12"/>
+      <circle id="ring" cx="75" cy="75" r="64" fill="none" stroke="var(--cyan)" stroke-width="12" stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402"/>
+    </svg>
+    <div class="val"><span class="num" id="score">&mdash;</span><span class="pct">/ 100</span></div>
+  </div>
+  <div class="verdict">
+    <h3 id="band">Answer the questions below</h3>
+    <p id="bandnote">Your score weights critical controls (MFA, secrets, SQLi, payments) highest. Red dots = critical.</p>
+    <div class="meter"><div class="bar"><div class="fill" id="fill"></div></div></div>
+    <div class="progress" id="prog">0 of 15 answered</div>
+  </div>
+</div>
+<div id="quiz"><div class="qrow" data-w="5" data-fix="Add phishing-resistant MFA and per-account/IP throttling with burst lockout." data-link="fixes.html" data-q="MFA + rate limiting on every login (staff, partner, peripheral)?">
+      <div class="qtext"><span class="sev s5"></span>MFA + rate limiting on <b>every</b> login (staff, partner, peripheral)?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="5" data-fix="Move secrets to a vault, rotate anything exposed, scan repos + CI with gitleaks." data-link="check.html" data-q="All secrets in a vault/env &amp;mdash; none in code, JS bundles or git history?">
+      <div class="qtext"><span class="sev s5"></span>All secrets in a vault/env &mdash; none in code, JS bundles or git history?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="5" data-fix="Change all defaults, remove debug routes in prod, gate admin behind MFA + IP allow-list." data-link="fixes.html" data-q="No default credentials anywhere; admin/debug not reachable publicly?">
+      <div class="qtext"><span class="sev s5"></span>No default credentials anywhere; admin/debug not reachable publicly?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="5" data-fix="Parameterize all queries; give the app a least-privilege DB account." data-link="fixes.html" data-q="Every DB query uses bound parameters (no string concatenation)?">
+      <div class="qtext"><span class="sev s5"></span>Every DB query uses bound parameters (no string concatenation)?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="5" data-fix="Add a server-side state machine, maker-checker separation and per-txn limits before any transfer." data-link="fixes.html" data-q="Payment/disbursement APIs enforce state + maker-checker + ceilings server-side?">
+      <div class="qtext"><span class="sev s5"></span>Payment/disbursement APIs enforce state + maker-checker + ceilings server-side?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="4" data-fix="Check owner after fetch; return 404 if the object isn&#x27;t the caller&#x27;s." data-link="fixes.html" data-q="Every record access checks ownership (no IDOR)?">
+      <div class="qtext"><span class="sev s4"></span>Every record access checks ownership (no IDOR)?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="4" data-fix="Allow-list outbound hosts, block internal ranges, require IMDSv2, disable XML entities." data-link="fixes.html" data-q="SSRF allow-listing + IMDSv2, and XXE disabled?">
+      <div class="qtext"><span class="sev s4"></span>SSRF allow-listing + IMDSv2, and XXE disabled?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="4" data-fix="Validate magic bytes + size, random name, store outside web root, never execute." data-link="fixes.html" data-q="File uploads validated (type + size) and stored non-executable?">
+      <div class="qtext"><span class="sev s4"></span>File uploads validated (type + size) and stored non-executable?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="4" data-fix="Review consents/scopes in your IdP; alert on new app creds and role grants." data-link="fixes.html" data-q="Vendor OAuth apps least-privilege, with alerts on new app credentials?">
+      <div class="qtext"><span class="sev s4"></span>Vendor OAuth apps least-privilege, with alerts on new app credentials?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="4" data-fix="Alert on burst velocity, sequential IDs, new app creds; auto-disable on high-confidence hits." data-link="fixes.html" data-q="Real-time detection on login bursts / enumeration + automated containment?">
+      <div class="qtext"><span class="sev s4"></span>Real-time detection on login bursts / enumeration + automated containment?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="3" data-fix="Set httpOnly, secure, sameSite=strict; use long random tokens, rotate on privilege change." data-link="fixes.html" data-q="Session cookies httpOnly + secure + sameSite, with strong tokens?">
+      <div class="qtext"><span class="sev s3"></span>Session cookies httpOnly + secure + sameSite, with strong tokens?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="3" data-fix="Decide liveness server-side from the frames; detect injected/virtual cameras." data-link="fixes.html" data-q="Identity/liveness verdicts computed server-side (never a client flag)?">
+      <div class="qtext"><span class="sev s3"></span>Identity/liveness verdicts computed server-side (never a client flag)?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="3" data-fix="Keep a live inventory of internet-facing apps incl. peripheral ones; scan continuously." data-link="check.html" data-q="External attack surface inventoried and re-scanned regularly?">
+      <div class="qtext"><span class="sev s3"></span>External attack surface inventoried and re-scanned regularly?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="2" data-fix="Add gitleaks to CI so leaked keys fail the build." data-link="check.html" data-q="Secret scanning (gitleaks) running in CI?">
+      <div class="qtext"><span class="sev s2"></span>Secret scanning (gitleaks) running in CI?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div><div class="qrow" data-w="2" data-fix="Add semgrep --config auto to CI to catch injection/SSRF patterns early." data-link="check.html" data-q="SAST (semgrep) running in CI on every push/PR?">
+      <div class="qtext"><span class="sev s2"></span>SAST (semgrep) running in CI on every push/PR?</div>
+      <div class="opts">
+        <button type="button" class="opt yes" data-v="1">Yes</button>
+        <button type="button" class="opt part" data-v="0.5">Partly</button>
+        <button type="button" class="opt no" data-v="0">No</button>
+      </div>
+    </div></div>
+<div class="actions" id="actions"></div>
+<script>
+(function(){
+  var rows=[].slice.call(document.querySelectorAll('.qrow'));
+  var ring=document.getElementById('ring'), CIRC=402;
+  var answers={};
+  function band(p){
+    if(p>=90)return['Strong',  'Core defenses look solid. Keep scanning and watch the manual-only controls.', 'var(--green)'];
+    if(p>=70)return['Decent',  'Good foundation, but close the gaps below before they chain together.', 'var(--cyan)'];
+    if(p>=45)return['At risk', 'Several preventable weaknesses are open &mdash; exactly what ARTEX chains. Act on the red items first.', 'var(--amber)'];
+    return      ['Exposed', 'Critical controls are missing. Treat the red items as urgent.', 'var(--red)'];
+  }
+  function recalc(){
+    var total=0, got=0, answered=0;
+    rows.forEach(function(r){
+      var w=parseFloat(r.dataset.w); total+=w;
+      if(r.id in answers){}
+      var v=answers[r.dataset.q];
+      if(v!==undefined){ got+=w*v; answered++; }
+    });
+    var pct = total? Math.round(got/total*100):0;
+    document.getElementById('score').textContent = answered?pct:'\u2014';
+    ring.style.strokeDashoffset = CIRC*(1-(answered?pct:0)/100);
+    var b=band(pct); 
+    ring.style.stroke=b[2];
+    var fill=document.getElementById('fill'); fill.style.width=pct+'%'; fill.style.background=b[2];
+    document.getElementById('prog').textContent = answered+' of 15 answered';
+    if(answered){ document.getElementById('band').textContent=b[0]; document.getElementById('bandnote').innerHTML=b[1]; document.getElementById('band').style.color=b[2]; }
+    // actions
+    var box=document.getElementById('actions'); box.innerHTML='';
+    var gaps=rows.filter(function(r){var v=answers[r.dataset.q];return v!==undefined && v<1;})
+                 .sort(function(a,b){return parseFloat(b.dataset.w)-parseFloat(a.dataset.w);});
+    if(gaps.length){
+      var h=document.createElement('h2'); h.textContent='Your priority fixes ('+gaps.length+')'; box.appendChild(h);
+      gaps.forEach(function(r){
+        var v=answers[r.dataset.q];
+        var c=document.createElement('div'); c.className='act-card'+(v===0.5?' part':'');
+        c.innerHTML='<div class="h">'+r.dataset.q+'</div><div class="f">'+r.dataset.fix+' &nbsp;<a href="'+r.dataset.link+'">See how &rarr;</a></div>';
+        box.appendChild(c);
+      });
+    } else if(answered===rows.length){
+      var d=document.createElement('div'); d.className='act-card'; d.style.borderLeftColor='var(--green)';
+      d.innerHTML='<div class="h">No gaps flagged \u2014 nice.</div><div class="f">Keep the manual tests (IDOR, payments, OAuth, liveness, detection) on a schedule, and run the local scanner regularly.</div>';
+      box.appendChild(d);
+    }
+  }
+  rows.forEach(function(r){
+    r.querySelectorAll('.opt').forEach(function(btn){
+      btn.onclick=function(){
+        r.querySelectorAll('.opt').forEach(function(b){b.classList.remove('on');});
+        btn.classList.add('on');
+        answers[r.dataset.q]=parseFloat(btn.dataset.v);
+        recalc();
+      };
+    });
+  });
+  recalc();
+})();
+</script>
+<div class="foot">Defensive reference only. Use ARTEX strictly on systems you own or are authorized to test. This self-check is a starting point, not an audit. Red = critical, amber = high, cyan = medium, grey = supporting.</div>
+</div>
+</body>
+</html>

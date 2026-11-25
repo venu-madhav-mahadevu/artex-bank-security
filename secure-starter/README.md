@@ -38,3 +38,10 @@ find **no hardcoded secrets, no string-concatenated SQL, and no weak cookie flag
 are the things a scanner can actually judge.
 
 See `SECURITY-CHECKLIST.md` for the fix-first order.
+
+
+## Automate the checks (CI + pre-commit)
+
+- **CI:** `.github/workflows/security-checks.yml` runs the pattern scan + gitleaks + semgrep on every push/PR. Copy it into your own repo's `.github/workflows/`.
+- **Pre-commit:** `.pre-commit-config.yaml` runs the same checks before each commit. `pip install pre-commit && pre-commit install`.
+- **Download just this baseline:** on GitHub, use **Code -> Download ZIP**, or `git clone` and copy the `secure-starter/` folder.

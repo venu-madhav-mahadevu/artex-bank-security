@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEX Framework Mapping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--green:#4cc38a;--red:#e65c5c;--amber:#f0a83a;--purple:#8b7 cf}
+  :root{--purple:#9a86f5}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 560px at 85% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--cyan)}
+  header{padding:44px 0 8px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,40px);margin:16px 0 10px;letter-spacing:-.02em}
+  .lede{font-size:16px;color:var(--mut);max-width:640px}
+  nav.top{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 4px}
+  nav.top a{text-decoration:none;border:1px solid var(--line2);padding:6px 13px;border-radius:999px;font-size:13px;color:var(--mut);transition:.15s}
+  nav.top a:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+  nav.top a.here{border-color:var(--cyan);color:var(--cyan);background:rgba(53,208,192,.08)}
+  .foot{border-top:1px solid var(--line);margin-top:40px;padding-top:18px;font-size:12.5px;color:var(--dim)}
+  h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag"><span class="dot"></span> Framework Mapping</span>
+  <h1>Mapped to the standards</h1>
+  <p class="lede">Each ARTEX weakness lined up against OWASP Top 10, MITRE ATT&amp;CK and NIST CSF &mdash; handy for audits, risk registers and talking to GRC. Treat it as a guide, and confirm mappings for your own context.</p>
+  <nav class="top"><a href="index.html">Report</a><a href="learn.html">Engineers vs attackers</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="check.html">Check your code</a><a href="scorecard.html">Self-assessment</a><a href="cases.html">Case studies</a><a href="frameworks.html" class="here">Frameworks</a><a href="faq.html">FAQ</a><a href="quiz.html">Quiz</a></nav>
+</header>
+
+<style>
+  .filter{display:flex;gap:8px;align-items:center;margin:4px 0 14px}
+  .filter input{flex:1;max-width:320px;background:#0b1119;border:1px solid var(--line2);border-radius:9px;color:var(--ink);font-size:13px;padding:9px 12px}
+  .filter input:focus{outline:none;border-color:var(--cyan)}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+  table{width:100%;border-collapse:collapse;min-width:640px}
+  th,td{text-align:left;padding:11px 14px;font-size:13.5px;border-bottom:1px solid var(--line)}
+  th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:#0e1623;position:sticky;top:0}
+  td.c{font-family:'JetBrains Mono',monospace;color:var(--cyan)}
+  td.m{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mut)}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(53,208,192,.04)}
+  .pci{border-top:1px solid var(--line);margin-top:28px;padding-top:20px}
+  .pci .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .pci .card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--panel)}
+  .pci .card h4{margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--cyan)}
+  .pci .card p{margin:0;font-size:13px;color:var(--mut)}
+  @media(max-width:640px){.pci .g{grid-template-columns:1fr}}
+</style>
+<div class="filter"><input id="q" type="text" placeholder="Filter by attack, OWASP, ATT&CK ID or NIST…"></div>
+<div class="tablewrap">
+<table id="map"><thead><tr><th>#</th><th>Weakness</th><th>OWASP Top 10</th><th>MITRE ATT&amp;CK</th><th>NIST CSF</th></tr></thead>
+<tbody><tr><td class="c">A1</td><td>No rate limit / MFA</td><td>A07 Auth Failures</td><td class="m">T1110 Brute Force</td><td>PR.AC / Protect</td></tr><tr><td class="c">A2</td><td>SQL injection</td><td>A03 Injection</td><td class="m">T1190 Exploit Public-Facing App</td><td>PR.IP / Protect</td></tr><tr><td class="c">A3</td><td>Auth / SAML bypass</td><td>A07 Auth Failures</td><td class="m">T1078 Valid Accounts</td><td>PR.AC / Protect</td></tr><tr><td class="c">A4</td><td>IDOR</td><td>A01 Broken Access Control</td><td class="m">T1190 Exploit Public-Facing App</td><td>PR.AC / Protect</td></tr><tr><td class="c">A5</td><td>SSRF</td><td>A10 SSRF</td><td class="m">T1552 Unsecured Credentials</td><td>PR.AC / DE.CM</td></tr><tr><td class="c">A5</td><td>XXE</td><td>A05 Security Misconfig</td><td class="m">T1190 Exploit Public-Facing App</td><td>PR.IP / Protect</td></tr><tr><td class="c">A6</td><td>File upload &rarr; web shell</td><td>A05 Security Misconfig</td><td class="m">T1505.003 Web Shell</td><td>DE.CM / Detect</td></tr><tr><td class="c">A7</td><td>Secrets in code</td><td>A05 Security Misconfig</td><td class="m">T1552 Unsecured Credentials</td><td>PR.DS / Protect</td></tr><tr><td class="c">A8</td><td>Exposed admin/debug &amp; weak sessions</td><td>A05 Security Misconfig</td><td class="m">T1190 Exploit Public-Facing App</td><td>PR.IP / Protect</td></tr><tr><td class="c">A9</td><td>Payment / disbursement abuse</td><td>A04 Insecure Design</td><td class="m">T1565 Data Manipulation</td><td>PR.AC / DE.AE</td></tr><tr><td class="c">A10</td><td>Over-privileged OAuth apps</td><td>A01 Broken Access Control</td><td class="m">T1098.001 Additional Cloud Credentials</td><td>PR.AC / Protect</td></tr><tr><td class="c">A11</td><td>Deepfake / liveness bypass</td><td>A07 Auth Failures</td><td class="m">T1556 Modify Auth Process</td><td>PR.AC / Protect</td></tr><tr><td class="c">A12</td><td>No machine-speed detection</td><td>A09 Logging &amp; Monitoring Failures</td><td class="m">&mdash; (defensive gap)</td><td>DE.CM / DE.AE</td></tr></tbody></table>
+</div>
+<div class="pci">
+  <h2>For a bank: PCI-DSS &amp; SOC 2 touchpoints</h2>
+  <div class="g">
+    <div class="card"><h4>PCI-DSS</h4><p>Req 6 (secure development, injection, patching), Req 8 (MFA &amp; auth), Req 7 (least privilege / access control), Req 10 (logging &amp; monitoring).</p></div>
+    <div class="card"><h4>SOC 2 (Trust Services)</h4><p>CC6 (logical access, MFA, least privilege), CC7 (detection &amp; monitoring), CC8 (change management / secure SDLC).</p></div>
+  </div>
+  <p class="hint" style="font-size:12.5px;color:var(--dim);margin-top:10px">Indicative only &mdash; your QSA/auditor maps controls to your environment.</p>
+</div>
+<script>
+(function(){
+  var q=document.getElementById('q'), rows=[].slice.call(document.querySelectorAll('#map tbody tr'));
+  q.addEventListener('input',function(){
+    var t=q.value.toLowerCase();
+    rows.forEach(function(r){ r.style.display = r.textContent.toLowerCase().indexOf(t)>=0 ? '' : 'none'; });
+  });
+})();
+</script>
+<div class="foot">Defensive reference only. Use ARTEX strictly on systems you own or are authorized to test. Mappings are approximate and for orientation; validate against the current framework versions.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEX Case Studies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--green:#4cc38a;--red:#e65c5c;--amber:#f0a83a;--purple:#8b7 cf}
+  :root{--purple:#9a86f5}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 560px at 85% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--cyan)}
+  header{padding:44px 0 8px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,40px);margin:16px 0 10px;letter-spacing:-.02em}
+  .lede{font-size:16px;color:var(--mut);max-width:640px}
+  nav.top{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 4px}
+  nav.top a{text-decoration:none;border:1px solid var(--line2);padding:6px 13px;border-radius:999px;font-size:13px;color:var(--mut);transition:.15s}
+  nav.top a:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+  nav.top a.here{border-color:var(--cyan);color:var(--cyan);background:rgba(53,208,192,.08)}
+  .foot{border-top:1px solid var(--line);margin-top:40px;padding-top:18px;font-size:12.5px;color:var(--dim)}
+  h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag"><span class="dot"></span> Case Studies</span>
+  <h1>What actually happened</h1>
+  <p class="lede">Two real-world patterns that match how ARTEX-style automation operates. Note the theme: no exotic zero-days &mdash; just known weaknesses, chained fast.</p>
+  <nav class="top"><a href="index.html">Report</a><a href="learn.html">Engineers vs attackers</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="check.html">Check your code</a><a href="scorecard.html">Self-assessment</a><a href="cases.html" class="here">Case studies</a><a href="frameworks.html">Frameworks</a><a href="faq.html">FAQ</a><a href="quiz.html">Quiz</a></nav>
+</header>
+
+<style>
+  .case{border:1px solid var(--line);border-radius:14px;padding:22px;margin:18px 0;background:linear-gradient(180deg,rgba(53,208,192,.04),transparent)}
+  .case h2{margin:0 0 4px;font-size:21px}
+  .case .sub{color:var(--mut);font-size:13.5px;margin:0 0 16px}
+  .tl{position:relative;margin-left:6px}
+  .tli{position:relative;padding:0 0 18px 24px;border-left:2px solid var(--line)}
+  .tli:last-child{border-left-color:transparent;padding-bottom:0}
+  .tli .dot{position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px rgba(53,208,192,.15)}
+  .tli .when{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan)}
+  .tli p{margin:4px 0 0;font-size:14.5px;color:#d6e2f0}
+  .lesson{border:1px solid var(--cyan-dim);background:rgba(53,208,192,.06);border-radius:10px;padding:14px 16px;margin-top:16px;font-size:14px}
+  .lesson b{color:var(--ink)}
+  .takeaways{border-top:1px solid var(--line);margin-top:30px;padding-top:20px}
+  .takeaways ul{padding-left:20px} .takeaways li{margin:7px 0;color:#d6e2f0}
+</style>
+<div class="case">
+  <h2>Korean banks &mdash; breached through the edges</h2>
+  <p class="sub">Peripheral systems, not core banking &middot; data exposed, no funds taken</p>
+  <div class="tl"><div class="tli"><div class="dot"></div><div class="c"><span class="when">Entry</span><p>Attackers probed <b>peripheral</b> systems (partner/support portals), not the hardened core banking apps.</p></div></div><div class="tli"><div class="dot"></div><div class="c"><span class="when">Weaknesses chained</span><p><b>SQL injection</b> and an <b>authentication bypass</b> in those side systems &mdash; both known, preventable classes.</p></div></div><div class="tli"><div class="dot"></div><div class="c"><span class="when">Impact</span><p>~67,000 people's data exposed. Notably, <b>no money was taken</b> and customer banking wasn't breached.</p></div></div><div class="tli"><div class="dot"></div><div class="c"><span class="when">Why it worked</span><p>The crown-jewel apps were well defended; the forgotten edges weren't. Automation found the weak edge fast.</p></div></div></div>
+  <div class="lesson"><b>Lesson:</b> your attack surface is every internet-facing app, including partner portals, support tools and legacy side-systems. Inventory and defend the edges as if they were the core &mdash; see <a href="scorecard.html">the self-assessment</a>.</div>
+</div>
+<div class="case">
+  <h2>ConnectWise / Storm-0940 &mdash; the OAuth blast radius</h2>
+  <p class="sub">Password spray &rarr; over-privileged vendor apps &middot; 2,250+ tenants</p>
+  <div class="tl"><div class="tli"><div class="dot"></div><div class="c"><span class="when">Foothold</span><p>A <b>password-spray</b> against accounts with weak/no MFA gave initial access.</p></div></div><div class="tli"><div class="dot"></div><div class="c"><span class="when">Pivot to OAuth</span><p>The actor abused <b>over-privileged vendor OAuth apps</b> &mdash; signing in <i>as the app</i>, which skips the user MFA prompt entirely.</p></div></div><div class="tli"><div class="dot"></div><div class="c"><span class="when">Scale</span><p>Using stolen app credentials, access fanned out across <b>2,250+ tenants</b> at once.</p></div></div><div class="tli"><div class="dot"></div><div class="c"><span class="when">Why it worked</span><p>Trusted third-party apps held broad scopes, and nobody alerted on new app credentials or service-principal sign-ins.</p></div></div></div>
+  <div class="lesson"><b>Lesson:</b> MFA on humans isn't enough if a trusted app can sign in as itself with broad scopes. Review OAuth consents, grant least privilege, and alert on new app credentials.</div>
+</div>
+<div class="takeaways">
+  <h2>What both teach</h2>
+  <ul>
+    <li><b>No zero-days needed.</b> Known, preventable weaknesses were enough once chained at speed.</li>
+    <li><b>The weakest edge decides the outcome</b> &mdash; not your best-defended app.</li>
+    <li><b>Identity is the new perimeter.</b> Credentials, tokens and app permissions are the real targets.</li>
+    <li><b>Detection speed matters.</b> Machine-speed attacks need machine-speed alerting and containment.</li>
+  </ul>
+</div>
+<div class="foot">Defensive reference only. Use ARTEX strictly on systems you own or are authorized to test. Incident details are summarized from public reporting for defensive learning.</div>
+</div>
+</body>
+</html>

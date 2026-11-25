@@ -1,0 +1,19 @@
+# Pre-commit hooks that run the ARTEX checks before each commit (all local).
+# Setup:  pip install pre-commit  &&  pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: artex-pattern-scan
+        name: ARTEX pattern scan
+        entry: bash check-code.sh .
+        language: system
+        pass_filenames: false
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.80.0
+    hooks:
+      - id: semgrep
+        args: ["--config", "auto", "--error", "--skip-unknown-extensions"]

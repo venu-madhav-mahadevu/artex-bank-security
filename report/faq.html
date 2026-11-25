@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEX FAQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f16;--panel:#121a28;--line:#223044;--line2:#2d4056;--ink:#e8eef6;--mut:#9fb2c8;--dim:#6f8299;--cyan:#35d0c0;--cyan-dim:#1d7a72;--green:#4cc38a;--red:#e65c5c;--amber:#f0a83a;--purple:#8b7 cf}
+  :root{--purple:#9a86f5}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 560px at 85% -10%,rgba(53,208,192,.10),transparent 60%),var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--cyan)}
+  header{padding:44px 0 8px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(53,208,192,.07);padding:6px 12px;border-radius:999px}
+  .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,5vw,40px);margin:16px 0 10px;letter-spacing:-.02em}
+  .lede{font-size:16px;color:var(--mut);max-width:640px}
+  nav.top{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 4px}
+  nav.top a{text-decoration:none;border:1px solid var(--line2);padding:6px 13px;border-radius:999px;font-size:13px;color:var(--mut);transition:.15s}
+  nav.top a:hover{border-color:var(--cyan-dim);color:var(--cyan)}
+  nav.top a.here{border-color:var(--cyan);color:var(--cyan);background:rgba(53,208,192,.08)}
+  .foot{border-top:1px solid var(--line);margin-top:40px;padding-top:18px;font-size:12.5px;color:var(--dim)}
+  h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag"><span class="dot"></span> FAQ</span>
+  <h1>Common questions</h1>
+  <p class="lede">Quick answers on ARTEX, what it can and can't do, and how to defend. Use the search box to jump to a topic.</p>
+  <nav class="top"><a href="index.html">Report</a><a href="learn.html">Engineers vs attackers</a><a href="examples.html">Attacks</a><a href="fixes.html">Fixes</a><a href="check.html">Check your code</a><a href="scorecard.html">Self-assessment</a><a href="cases.html">Case studies</a><a href="frameworks.html">Frameworks</a><a href="faq.html" class="here">FAQ</a><a href="quiz.html">Quiz</a></nav>
+</header>
+
+<style>
+  .fqsearch input{width:100%;max-width:340px;background:#0b1119;border:1px solid var(--line2);border-radius:9px;color:var(--ink);font-size:13px;padding:10px 12px;margin:4px 0 14px}
+  .fqsearch input:focus{outline:none;border-color:var(--cyan)}
+  .fq{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--panel);overflow:hidden}
+  .fq summary{cursor:pointer;padding:14px 16px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .fq summary::-webkit-details-marker{display:none}
+  .fq summary:after{content:"+";color:var(--cyan);font-size:20px;flex-shrink:0;transition:transform .2s}
+  .fq[open] summary:after{transform:rotate(45deg)}
+  .fq .a{padding:0 16px 15px;font-size:14px;color:#d6e2f0}
+  .fq .a code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:#0c121c;border:1px solid var(--line);padding:.08em .4em;border-radius:6px;color:#bfe9e3}
+  .nomatch{color:var(--dim);font-size:13.5px;display:none;padding:8px 2px}
+</style>
+<div class="fqsearch"><input id="fq" type="text" placeholder="Search questions…"></div>
+<div id="faqs"><details class="fq"><summary>Is ARTEX illegal to use?</summary><div class="a">No &mdash; the tool itself is legal and open-source. Using it against systems you don't own or aren't authorized to test is illegal. Run it only on your own or approved systems, in an isolated lower environment, with security-team sign-off.</div></details><details class="fq"><summary>Does ARTEX use new zero-day exploits?</summary><div class="a">No. In the reported incidents it used <b>no zero-days</b>. It chained known, preventable weaknesses &mdash; weak credentials, missing MFA, SQL injection, SSRF, exposed admin pages, leaked secrets &mdash; at machine speed. Speed, scale and a lower skill floor are what changed.</div></details><details class="fq"><summary>If I run the checker and it's clean, am I safe?</summary><div class="a">Not necessarily. A clean scan means no <i>obvious</i> pattern matched. Logic flaws (IDOR, payment limits, OAuth scopes, liveness, detection) can't be found by grep and need manual testing. Treat a pass as 'nothing obvious', not 'secure'.</div></details><details class="fq"><summary>What should we fix first?</summary><div class="a">Secrets and anything reachable without a login. Then, in order: MFA + rate limiting, kill default creds / exposed admin, parameterize queries, payment-API guards, vendor-app review, SSRF/IMDSv2/XXE, server-side liveness, machine-speed detection.</div></details><details class="fq"><summary>Can ARTEX break into our systems on its own?</summary><div class="a">It automates the steps a skilled attacker would take &mdash; recon, probing, chaining &mdash; with little human help once pointed at a target. But it exploits <i>existing</i> weaknesses; it doesn't invent access where good hygiene removes the gaps.</div></details><details class="fq"><summary>Do we need to rotate our Firebase/Google web API key if it's in the repo?</summary><div class="a">A Firebase <i>web</i> API key is public by design &mdash; it identifies the project, it isn't a password. The real fix is to <b>restrict</b> it (HTTP-referrer + API restrictions) and lock your security rules, not just rotate it.</div></details><details class="fq"><summary>Is it safe to paste our code into a website to check it?</summary><div class="a">No &mdash; don't paste source into any website, even one that says it runs in your browser. Use the local scanner (<code>check-code.sh</code>) and tools like gitleaks/semgrep on your own machine, so code never leaves it.</div></details><details class="fq"><summary>How is this different from a normal vulnerability scanner?</summary><div class="a">Traditional scanners flag issues from a checklist. ARTEX-style agents <i>reason</i>: they plan, try things, adapt to what they find, and chain several small weaknesses into one compromise &mdash; autonomously and fast.</div></details><details class="fq"><summary>What does &lsquo;identity is the new perimeter&rsquo; mean for us?</summary><div class="a">Credentials, tokens and app permissions are the main targets. MFA on humans isn't enough if a vendor OAuth app can sign in as itself with broad scopes. Watch app credentials and service-principal sign-ins, not just user logins.</div></details><details class="fq"><summary>We're a small team &mdash; where do we even start?</summary><div class="a">Run the <a href="scorecard.html">self-assessment</a> for a prioritized list, fix the red items, adopt the <a href="check.html">local checks</a> in CI, and build new services from the secure baseline in the repo. Small, steady hygiene beats most of this.</div></details></div>
+<div class="nomatch" id="nm">No questions match that search.</div>
+<script>
+(function(){
+  var inp=document.getElementById('fq'), items=[].slice.call(document.querySelectorAll('.fq')), nm=document.getElementById('nm');
+  inp.addEventListener('input',function(){
+    var t=inp.value.toLowerCase(), shown=0;
+    items.forEach(function(d){
+      var hit=d.textContent.toLowerCase().indexOf(t)>=0;
+      d.style.display=hit?'':'none'; if(hit)shown++;
+      if(t && hit) d.open=true; if(!t) d.open=false;
+    });
+    nm.style.display=shown?'none':'block';
+  });
+})();
+</script>
+<div class="foot">Defensive reference only. Use ARTEX strictly on systems you own or are authorized to test. Answers are general guidance for defensive use, not formal security or legal advice.</div>
+</div>
+</body>
+</html>

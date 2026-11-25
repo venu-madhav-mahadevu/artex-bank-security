@@ -1,0 +1,44 @@
+name: ARTEX security checks
+
+# Runs the local ARTEX pattern scan plus gitleaks and semgrep on every push and PR.
+# Nothing here uploads your source anywhere; it all runs inside the GitHub Actions runner.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pattern-scan:
+    name: Pattern scan (check-code.sh)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run check-code.sh
+        run: bash check-code.sh .
+
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so gitleaks can scan past commits
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"
+
+  code-scan:
+    name: Code scan (semgrep)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - name: semgrep
+        run: semgrep --config auto --error --metrics off .
