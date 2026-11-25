@@ -197,14 +197,17 @@ add('bot',"Hi, I'm <b>Venu Assistant</b>. Ask me anything about ARTEX — what i
 </div>
 <script>
 (function(){
-  var KEY='vb_intro_done';
-  try{ if(localStorage.getItem(KEY)) return; }catch(e){}
+  var CK='vb_intro_count', TK='vb_intro_last', MAX=2, INTERVAL=120000;
+  var cnt=0,last=0;
+  try{ cnt=parseInt(localStorage.getItem(CK)||'0',10)||0; last=parseInt(localStorage.getItem(TK)||'0',10)||0; }catch(e){}
+  if(cnt>=MAX) return;
+  if(cnt>0 && (Date.now()-last)<INTERVAL) return;
   var box=document.getElementById('vbIntro'); if(!box) return;
   var liked=null, yb=document.getElementById('vbIY'), nb=document.getElementById('vbIN');
   function setLike(v){ liked=v; yb.classList.toggle('on',v===1); nb.classList.toggle('on',v===0); }
   yb.onclick=function(){ setLike(liked===1?null:1); };
   nb.onclick=function(){ setLike(liked===0?null:0); };
-  function done(){ try{localStorage.setItem(KEY,'1');}catch(e){} box.classList.remove('show'); setTimeout(function(){box.style.display='none';},600); }
+  function done(){ box.classList.remove('show'); setTimeout(function(){box.style.display='none';},600); }
   document.getElementById('vbISub').onclick=function(){
     var nm=(document.getElementById('vbIName').value||'').trim();
     var mg=(document.getElementById('vbIMsg').value||'').trim();
@@ -219,7 +222,7 @@ add('bot',"Hi, I'm <b>Venu Assistant</b>. Ask me anything about ARTEX — what i
   };
   document.getElementById('vbISkip').onclick=done;
   document.getElementById('vbIX').onclick=done;
-  setTimeout(function(){ box.classList.add('show'); },2500);
+  setTimeout(function(){ box.classList.add('show'); try{ localStorage.setItem(CK,String(cnt+1)); localStorage.setItem(TK,String(Date.now())); }catch(e){} },2500);
 })();
 </script>
 </body>
