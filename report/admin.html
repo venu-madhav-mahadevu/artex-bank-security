@@ -82,10 +82,15 @@
     <table id="t-asks"><thead><tr><th>When</th><th>Question</th><th>Page</th></tr></thead><tbody></tbody></table>
     <div class="muted" id="asks-empty" style="display:none">No questions yet.</div>
 
+    <h2 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">Visitor responses <button class="btn ghost" id="exp-intro" style="font-size:12px;padding:5px 12px">Export CSV</button></h2>
+    <div class="muted" id="intro-sum" style="margin:-4px 0 8px"></div>
+    <table id="t-intro"><thead><tr><th>When</th><th>Name</th><th>Likes it?</th><th>Message / request</th><th>Visitor</th><th>Page</th></tr></thead><tbody></tbody></table>
+    <div class="muted" id="intro-empty" style="display:none">No responses yet.</div>
+
     <h2>Recent visits</h2>
     <table id="t-visits"><thead><tr><th>When</th><th>Device</th><th>Browser</th><th>OS</th><th>Screen</th><th>Time zone</th><th>Lang</th><th>Page</th><th>Referrer</th></tr></thead><tbody></tbody></table>
 
-    <div class="privacy"><b>About this data.</b> Everything here is anonymous: device type, browser, OS, screen size, language, time zone, referrer and the questions asked. The web does not expose a visitor's name, computer/system name, or identity, so none is collected or shown. Only this signed-in admin account can read it.</div>
+    <div class="privacy"><b>About this data.</b> Everything here is anonymous: device type, browser, OS, screen size, language, time zone, referrer and the questions asked. The web does not expose a visitor's name, computer/system name, or identity automatically, so none is captured silently. A visitor may <b>optionally</b> type their own name, a like, and a message in the popup; those appear in "Visitor responses" exactly as entered. Only this signed-in admin account can read any of it.</div>
   </div>
 </div>
 
@@ -156,11 +161,31 @@
       tr.innerHTML = `<td>${esc(fmt(a.ts))}</td><td>${esc(a.q)}</td><td>${esc(a.page)}</td>`;
       at.appendChild(tr);
     });
-    // feedback
+    // feedback + visitor responses
     try {
       const fSnap = await getDocs(query(collection(db,"feedback"), orderBy("ts","desc"), limit(500)));
-      let help=0, tot=0; fSnap.forEach(d => { tot++; if(d.data().helpful) help++; });
-      $("fb-sum").textContent = tot ? ("Feedback: " + help + " of " + tot + " rated it helpful (" + Math.round(help/tot*100) + "%)") : "Feedback: none yet.";
+      let help=0, tot=0; const intros=[];
+      fSnap.forEach(d => { const x=d.data(); if(x.kind==="intro"){ intros.push(x); } else { tot++; if(x.helpful) help++; } });
+      $("fb-sum").textContent = tot ? ("Helpful feedback: " + help + " of " + tot + " rated it helpful (" + Math.round(help/tot*100) + "%)") : "Helpful feedback: none yet.";
+      const it = $("t-intro").querySelector("tbody"); it.innerHTML = "";
+      const named = intros.filter(x=>x.name).length;
+      const likes = intros.filter(x=>x.liked===true).length;
+      const dislikes = intros.filter(x=>x.liked===false).length;
+      const msgs = intros.filter(x=>x.msg).length;
+      $("intro-sum").textContent = intros.length ? (intros.length+" responses \u00b7 "+named+" gave a name \u00b7 "+likes+" \ud83d\udc4d / "+dislikes+" \ud83d\udc4e \u00b7 "+msgs+" left a message") : "";
+      $("intro-empty").style.display = intros.length ? "none" : "block";
+      intros.forEach(x => {
+        const tr=document.createElement("tr");
+        const like = x.liked===true?"\ud83d\udc4d":(x.liked===false?"\ud83d\udc4e":"\u2014");
+        tr.innerHTML = `<td>${esc(fmt(x.ts))}</td><td>${esc(x.name||"\u2014")}</td><td>${like}</td><td>${esc(x.msg||"\u2014")}</td><td>${esc(x.visitorId||"\u2014")}</td><td>${esc(x.page||"")}</td>`;
+        it.appendChild(tr);
+      });
+      const expBtn=$("exp-intro");
+      if(expBtn) expBtn.onclick=function(){
+        const rows=[["When","Name","Likes","Message","Visitor","Page"]].concat(intros.map(x=>[fmt(x.ts),x.name||"",x.liked===true?"yes":(x.liked===false?"no":""),(x.msg||"").replace(/\s+/g," "),x.visitorId||"",x.page||""]));
+        const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n");
+        const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="visitor-responses.csv"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      };
     } catch(e){ $("fb-sum").textContent = ""; }
   }
 
